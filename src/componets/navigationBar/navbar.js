@@ -1,14 +1,33 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import "../home/home.css";
 
-function navbar(props) {
+function Navbar({image0}) {
+        
+
     return (
-        <div>
-            <div className='logo'>
-                <img src="" alt="Logo" />
-            </div>
-            
-        </div>
+     
+
+
+                    <div className="header">
+                    <img className="logo1" src={image0} alt="Logo" />
+                    <h1 className="logo">
+                        <span className="first">Rwanda</span>
+                        <span className="second"> Revenue</span>{" "}
+                        <span className="teritiary">Authority</span>
+                    </h1>
+                    <nav>
+                        <ul>
+                        <li><Link to="/" exact>Home</Link></li>
+                        <li><Link to="/Contacts" exact>Contacts</Link></li>
+                        <li><Link to="/Bookings" exact>Bookings</Link></li>
+                        <li><Link to="/Login" exact>Login</Link></li>
+                        </ul>
+                    </nav>
+                </div>
+
+        
     );
 }
 
-export default navbar;
+export default Navbar;

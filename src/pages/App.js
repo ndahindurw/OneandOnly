@@ -1,18 +1,21 @@
-import Signup from "../componets/signupFiles/signup";
 import "./App.css";
-import Login from "../componets/signupFiles/Login";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
+import Home from "../componets/home/Home";
+ import Login from "../componets/signupFiles/Login";
+// import Signup from "../componets/signupFiles/signup";
+import { Routes, Route } from "react-router-dom";
+import Signup from "../componets/signupFiles/signup";
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Switch>
-          <Route path="/signup" component={Signup} />
-          <Route path="/login" component={Login} />
-        </Switch>
-      </Router>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/Contacts" element={<Home/>}/>
+        <Route path="/Bookings" element={<Home/>}/>
+        <Route path="/Login" element={<Login/>}/>
+        <Route path="/Signup" element={<Signup/>}/>
+      </Routes>
     </div>
   );
 }

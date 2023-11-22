@@ -1,4 +1,4 @@
-.signup-container {
+.login-container {
     width: 100%;
     margin: 0,auto;
     height: 100%;
@@ -11,15 +11,15 @@
     
   }
   
-  .signup-form-container {
+  .login-form-container {
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
   .left {
-    width: 400px;
-    height: 80vh;
+    width: 300px;
+    height: 50vh;
     text-align: left;
     background: #002E33;
     color: #F5F5F5;
@@ -47,7 +47,7 @@
     background: white;
     border-radius: 0 10px 10px 0;
     width: 350px;
-    height: 80vh;
+    height: 50vh;
   }
   
   .form-container {
@@ -62,7 +62,7 @@
   
   .input {
     width: 100%;
-    max-width: 400px; 
+    max-width: 300px; 
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #999999;
@@ -76,8 +76,9 @@
   
   .green-btn {
     width: 100%;
-    max-width: 400px; 
+    max-width: 300px; 
     margin-top: 50px;
+    
     padding: 10px;
     background: #f9B520;
     color: #F5F5F5;
@@ -87,7 +88,7 @@
     cursor: pointer;
   }
   .green-btn:hover{
-    background-color:#9DCF33;
+    background-color:#A3DC2F;
   }
   
   /* Adjustments for small screens */

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-
+import './Login.css'
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -27,7 +26,7 @@ function Login() {
       if (response.status === 200) {
         // Successful login
         console.log('Login successful');
-        console.log(response.data)
+        console.log(response.data);
         setError(null);
       } else {
         throw new Error('Login failed');
@@ -47,16 +46,14 @@ function Login() {
       <div className="login-form-container">
         <div className="left">
           <h1>
-            Welcome To RRA <span>Login Here</span>
+            Welcome To RRA 
           </h1>
-          <Link to="/signup">
-            <button type="button" className="green-btn">
-              Sign Up
-            </button>
+          <Link to="/Signup" className="signup-link">
+            Sign Up Here
           </Link>
         </div>
         <div className="right">
-          <form action="" className="form-container" onSubmit={handleLogin}>
+          <form className="form-container" onSubmit={handleLogin}>
             <h2>Login</h2>
             <input
               type="email"
