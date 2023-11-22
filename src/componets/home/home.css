@@ -1,0 +1,344 @@
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    justify-content: center;
+    background-color: #002E33;
+
+   
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    color: #f9B520; 
+    margin-right: 280px;
+}
+.logo1 {
+    margin-right: 5px;
+    width: 50px;  
+    height: 50px;
+    border-radius: 50%;
+}
+
+
+.first {
+    color: #A3DC2F; 
+}
+
+.second {
+    color: #4AB0DD;
+}
+
+.teritiary {
+    color: #f9B520; 
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0; /* Remove default padding */
+}
+
+nav li {
+    list-style: none;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-family: 'Kumbh Sans';
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+nav ul li:hover a {
+    color: #f9B520;
+}
+
+
+.hero-section {
+    position: relative;
+    background-color: #002E33;
+    color: #F5F5F5;
+    text-align: center;
+    padding: 100px 20px;
+    width: 100%;
+    height: 70vh;
+}
+
+
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px;
+}
+
+.search-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 20px;
+    width: 35%; 
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #f9B520; 
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #A3DC2F; 
+}
+.image-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: -300px;
+    
+}
+
+
+.her0-image3 {
+    border-radius: 50%;
+    margin-bottom: 200px;
+}
+
+
+.her0-image3 {
+    width: 319px;
+    height: 307px;
+    margin-right: 180px;
+    margin-top: -120px;
+}
+
+
+
+.hero-text {
+    font-size: 79px;
+    margin-top: -10px;
+    font-family: 'Kumbh Sans';
+    font-weight: 80;
+    text-transform: capitalize;
+    color: #F5F5F5;
+    word-wrap: break-word;
+    display: flex;
+    align-items: flex-start;
+    padding: 30px;
+    margin-left: 150px;
+}
+
+
+.hero-text2 {
+    font-size: 16px; 
+    margin-top: 10px;
+    font-weight: 60; 
+    color: #A3DC2F; 
+    text-align: start; 
+    margin-left: 200px;
+}
+
+.features-section {
+    display: flex;
+    justify-content: space-around;
+    padding: 80px 0;
+    background-color: #F5F5F5;
+}
+
+.feature {
+    text-align: center;
+    width: 355px;
+    height: 339px;
+}
+
+.feature img {
+    width: 335px;
+    height: 319px;
+    border-radius: 9999px;
+    margin-bottom: 20px;
+}
+
+.feature h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #4AB0DD;
+}
+
+.feature p {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.50);
+}
+
+
+
+.booking-section {
+    position: relative;
+    text-align: center;
+    padding: 100px 0;
+    background-color: #002E33;
+}
+
+.booking-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.title {
+    font-size: 25px;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #4AB0DD;
+   
+}
+
+.book-now-button {
+    width: 300px;
+    height: 40px;
+    background-color: #f9B520;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+    
+    border-radius: 75px;
+    margin-top: 20px;
+}
+.book-now-button:hover{
+    background-color: #A3DC2F ;
+}
+
+.booking-image {
+    width: 517px;
+    height: 111px;
+    border-radius: 75px;
+    margin-top: 20px;
+}
+
+.footers {
+    text-align: center;
+    padding: 20px;
+    background-color: #002E33;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .landing-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .footers {
+        position: static;
+        margin-top: auto;
+    }
+
+    .logo {
+        margin-right: 0;
+        text-align: center;
+    }
+
+    nav ul {
+        margin-top: 20px;
+        justify-content: center;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+
+    .image-container {
+        justify-content: center;
+        margin-top: -100px;
+    }
+
+    .her0-image3 {
+        margin-right: 0;
+        margin-top: -50px;
+    }
+
+    .hero-text {
+        font-size: 36px;
+        margin-left: 0;
+    }
+
+    .hero-text2 {
+        margin-left: 0;
+    }
+
+    .features-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .feature {
+        margin-bottom: 40px;
+    }
+
+    .booking-section {
+        padding: 50px 0;
+    }
+
+    .book-now-button {
+        width: 100%;
+    }
+}
