@@ -6,6 +6,7 @@ import image3 from "../../assets/extendRoom4.jpg";
 import image4 from "../../assets/extendRoom2.jpg";
 import image5 from "../../assets/meeting rooms.jpg";
 import Navbar from "../navigationBar/navbar";
+import { Link } from "react-router-dom";
 
 function Home({image0}) {
     return (
@@ -27,7 +28,7 @@ function Home({image0}) {
                             placeholder="Type Here...."
                             className="search-input"
                         />
-                        <button className="search-button">Search Room</button>
+                        <button className="search-button"><Link to="/availableRoom" className="search-Link">Search Room</Link></button>
                     </div>
 
                     <div className="image-container">
@@ -56,7 +57,7 @@ function Home({image0}) {
                 <div className="booking-section">
                     <div className="booking-text">
                         <div className="title">Looking For a Room to Book ? </div>
-                        <button className="book-now-button">Book Now</button>
+                        <button className="book-now-button" >Book Now</button>
                     </div>
                 </div>
 

@@ -44,7 +44,7 @@ function Login({image0}) {
 
   return (
     <div className="login-container">
-      <Navbar image0={image0}/>
+      <Navbar />
       <div className="login-form-container">
         <div className="right">
           <form className="form-container" onSubmit={handleLogin}>

@@ -5,7 +5,7 @@ import axios from 'axios';
 import './signup.css';
 import Navbar from '../navigationBar/navbar';
 
-function Signup(image0={image0}) {
+function Signup() {
   const [credentials, setCredentials] = useState({
     fullnames: '',
     email: '',
@@ -58,16 +58,7 @@ function Signup(image0={image0}) {
       <Navbar/>
       <div className="signup-form-container">
         
-        {/* <div className="left">
-          <h1>
-            Welcome To RRA <span>Signup Here</span>
-          </h1>
-          <Link to="/login">
-            <button type="button" className="green-btn">
-              Sign In
-            </button>
-          </Link>
-        </div> */}
+        
         <div className="right">
           <form action="" className="form-container" onSubmit={handleSubmit}>
             <h2>Create Account</h2>
