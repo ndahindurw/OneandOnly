@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import './signup.css';
+import Navbar from '../navigationBar/navbar';
 
-function Signup() {
+function Signup(image0={image0}) {
   const [credentials, setCredentials] = useState({
     fullnames: '',
     email: '',
@@ -52,9 +53,12 @@ function Signup() {
   };
 
   return (
+  
     <div className="signup-container">
+      <Navbar/>
       <div className="signup-form-container">
-        <div className="left">
+        
+        {/* <div className="left">
           <h1>
             Welcome To RRA <span>Signup Here</span>
           </h1>
@@ -63,7 +67,7 @@ function Signup() {
               Sign In
             </button>
           </Link>
-        </div>
+        </div> */}
         <div className="right">
           <form action="" className="form-container" onSubmit={handleSubmit}>
             <h2>Create Account</h2>
