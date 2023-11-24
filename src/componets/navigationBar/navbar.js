@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import "../home/home.css";
+import image0 from "../../assets/RRAImage.jpg";
 
-function Navbar({image0}) {
+function Navbar() {
         
 
     return (
