@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css'
+import Navbar from '../navigationBar/navbar';
 
-function Login() {
+function Login({image0}) {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -43,15 +44,8 @@ function Login() {
 
   return (
     <div className="login-container">
+      <Navbar image0={image0}/>
       <div className="login-form-container">
-        <div className="left">
-          <h1>
-            Welcome To RRA 
-          </h1>
-          <Link to="/Signup" className="signup-link">
-            Sign Up Here
-          </Link>
-        </div>
         <div className="right">
           <form className="form-container" onSubmit={handleLogin}>
             <h2>Login</h2>
@@ -78,7 +72,9 @@ function Login() {
               Login
             </button>
           </form>
+          <Link to = "/Signup" className='accountLink'>Already Has An Account</Link>
         </div>
+        
       </div>
     </div>
   );
