@@ -57,7 +57,6 @@ function Signup(image0={image0}) {
   
     <div className="signup-container">
       <Navbar/>
-      <Navbar/>
       <div className="signup-form-container">
         
         
