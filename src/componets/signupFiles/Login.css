@@ -1,86 +1,78 @@
-/* Login.css */
 
 .login-container {
-    width: 100%;
-    display: flex;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #002E33;
+  padding: 20px;
+  max-height: 50vh;
+}
+
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.form-container {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+  font-size: 24px;
+  color: #9DCF33;
+  margin-bottom: 20px;
+}
+
+.input {
+  width: 80%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #999999;
+  border-radius: 5px;
+}
+
+.error-message {
+  color: #FF0000;
+  margin: 10px 0;
+}
+
+.green-btn {
+  width: 50%;
+  padding: 12px;
+  background: #9DCF33;
+  color: #F5F5F5;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.account-link {
+  color: #4AB0DD;
+}
+
+.green-btn:hover {
+  background-color: #76b545;
+}
+
+
+@media screen and (max-width: 768px) {
+  .login-form-container {
     flex-direction: column;
     align-items: center;
-    background-color: #002E33;
-    padding: 20px;
-    
   }
-  
-  .login-form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .right {
-    padding: 20px;
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 5px;
-    
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
+
   .form-container {
-    text-align: center;
-  }
-  
-  .form-container h2 {
-    font-size: 24px;
-    color: #9DCF33;
-    margin-bottom: 20px;
-  }
-  
-  .input {
     width: 80%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #999999;
-    border-radius: 5px;
   }
-  
-  .error-message {
-    color: #FF0000;
-    margin: 10px 0;
-  }
-  
-  .green-btn {
-    width: 100%;
-    padding: 12px;
-    background: #f9B520;
-    color: #F5F5F5;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-  .accountLink{
-   color: #9DCF33;
-    
-  }
-  .green-btn:hover {
-    background-color: #9DCF33;
-  }
-  
-  
-  /* Adjustments for small screens */
-  @media screen and (max-width: 768px) {
-    .login-form-container {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .left, .right {
-      width: 100%;
-      border-radius: 10px;
-      margin: 10px 0;
-    }
-  }
-  
+}

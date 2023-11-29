@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-
 import './signup.css';
 import Navbar from '../navigationBar/navbar';
+
 
 function Signup() {
   const [credentials, setCredentials] = useState({
@@ -21,13 +20,14 @@ function Signup() {
     e.preventDefault();
 
     try {
-      const url = 'http://localhost:8080/rra/v1/auth/signup';
-
-      const response = await axios.post(url, credentials, {
+    
+      const response = await axios.post(`${process.env.REACT_APP_SIGNUP}`, credentials, {
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`,
         },
       });
+      
 
       if (response.status === 200) {
         setError(null);

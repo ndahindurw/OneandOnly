@@ -19,7 +19,7 @@
     padding: 50px;
     justify-content: center;
     background-color: #002E33;
-
+    height: 0.5vi;
    
 }
 
@@ -150,10 +150,10 @@ nav ul li:hover a {
 
 
 .hero-text {
-    font-size: 79px;
+    font-size: 69px;
     margin-top: -10px;
     font-family: 'Kumbh Sans';
-    font-weight: 80;
+    font-weight: 70;
     text-transform: capitalize;
     color: #F5F5F5;
     word-wrap: break-word;

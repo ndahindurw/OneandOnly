@@ -7,9 +7,7 @@ function Navbar() {
         
 
     return (
-     
-
-
+    
                     <div className="header">
                     <img className="logo1" src={image0} alt="Logo" />
                     <h1 className="logo">

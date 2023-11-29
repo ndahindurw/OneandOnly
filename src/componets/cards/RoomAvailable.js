@@ -1,38 +1,51 @@
-import React from 'react';
-import Navbar from '../navigationBar/navbar';
+import React from "react";
+import Card from "./Card";
+import Navbar from "../navigationBar/navbar";
+import { image2, image4, image5 } from "../images";
 
+const RoomContainer = () => {
+  const room1 = {
+    title: "Meeting Room 1",
+    description: "A spacious meeting room for collaboration.",
+    facilities: ["Wi-Fi", "Projector"],
+    address: "Floor 1",
+    imageSrc: image4,
+    status: "Available",
+    bookedBy: "Sales Department",
+  };
 
-function RoomAvailable({images}) {
+  const room2 = {
+    title: "Conference Room",
+    description: "A conference room with advanced audiovisual equipment.",
+    facilities: ["Wi-Fi", "Video Conferencing"],
+    address: "Floor 2",
+    imageSrc: image2,
+    status: "Occupied",
+    bookedBy: "Marketing Department",
+  };
+  const room3 = {
+    title: "Meeting Room",
+    description: "A conference room with advanced audiovisual equipment.",
+    facilities: ["Wi-Fi", "Video Conferencing"],
+    address: "Floor 2",
+    imageSrc: image5,
+    status: "Occupied",
+    bookedBy: "Marketing Department",
+  };
 
-    const {image2 ,image4,image5} =images
-    return (
-        <div className='container'>
-            <Navbar/>
-            <Card
-                title="Card 1"
-                image={image2}
-                description=""
-                facilties={<AiOutlineWifi/>}
-                address={<IoLocationSharp />}
-
-            />
-            <Card
-                title="Card 2"
-                image={image5}
-                description=""
-                facilties={<AiOutlineWifi/>}
-                address={<IoLocationSharp />}
-            />
-            <Card
-                title="Card 2"
-                image={image4}
-                description=""
-                facilties={<AiOutlineWifi/>}
-                address={<IoLocationSharp />}
-            />
-         
+  return (
+    <div>
+        <Navbar/>
+        <div className="header-room">
+            <h1>
+                All You Preference Here
+            </h1>
         </div>
-    );
-}
+      <Card {...room1} />
+      <Card {...room2} />
+      <Card {...room3} />
+    </div>
+  );
+};
 
-export default RoomAvailable;
+export default RoomContainer;

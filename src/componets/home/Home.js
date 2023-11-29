@@ -1,25 +1,21 @@
 import React from "react";
 import "./home.css";
-
-import image2 from "../../assets/extendRoom3.jpg";
-import image3 from "../../assets/extendRoom4.jpg";
-import image4 from "../../assets/extendRoom2.jpg";
-import image5 from "../../assets/meeting rooms.jpg";
+import {image0,image2,image3,image4,image5} from '../../componets/images'
 import Navbar from "../navigationBar/navbar";
 import { Link } from "react-router-dom";
 
-function Home({image0}) {
+function Home() {
     return (
         <div className="content">
             <div className="landing-container">
                 
-                <Navbar image0={image0}/>
+                <Navbar/>
                 <div className="hero-section">
-                    <h1 className="hero-text"> some Perfect Room </h1>
+                    <h1 className="hero-text"> Find Some Perfect Rooms </h1>
                     <h3 className="hero-text2">
                         Use our combined search bar to easily find rooms based on your
                         preferences,
-                        <br /> such as location, date, and room type.
+                        <br/> such as location, date, and room type.
                     </h3>
 
                     <div className="search-bar">
@@ -32,7 +28,7 @@ function Home({image0}) {
                     </div>
 
                     <div className="image-container">
-                        <img src={image3} alt="Image 3" className="her0-image3" />
+                        <img src={image2} alt="Image 3" className="her0-image3" />
                     </div>
                 </div>
 
