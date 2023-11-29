@@ -4,7 +4,7 @@ import {image0,image2,image3,image4,image5} from '../../componets/images'
 import Navbar from "../navigationBar/navbar";
 import { Link } from "react-router-dom";
 
-function Home() {
+function Home({image0}) {
     return (
         <div className="content">
             <div className="landing-container">

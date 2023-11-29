@@ -4,7 +4,7 @@ import './signup.css';
 import Navbar from '../navigationBar/navbar';
 
 
-function Signup() {
+function Signup(image0={image0}) {
   const [credentials, setCredentials] = useState({
     fullnames: '',
     email: '',
@@ -54,7 +54,9 @@ function Signup() {
 
   return (
   
+  
     <div className="signup-container">
+      <Navbar/>
       <Navbar/>
       <div className="signup-form-container">
         
