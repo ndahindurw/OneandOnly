@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import authService from '../Services/authService';
 import Navbar from '../navigationBar/navbar';
+import { jwtDecode as jwt_decode } from 'jwt-decode';
 
 const Signin = () => {
   const [credentials, setCredentials] = useState({
@@ -15,6 +16,7 @@ const Signin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
 
     try {
       const response = await authService.login(credentials);
@@ -22,13 +24,18 @@ const Signin = () => {
 
       if (response?.data.accessToken) {
         authService.setToken(response?.data?.accessToken);
-        navigate('/');
-      }
+        console.log('setted Token ', authService.setToken())
+      
+        const payLoad = jwt_decode(response?.data?.accessToken);        
+        payLoad?.authorities==='admin' ? navigate('/availableRoom'): navigate('/Home');
+        
+    }
+    
 
       setError(null);
     } catch (err) {
       console.error('Error during login:', err);
-      const errorMessage = err.response?.data?.message || 'An error occurred';
+      const errorMessage = err.response?.data?.message || 'Bad Credentials';
       setError(errorMessage);
       console.log(err);
     }

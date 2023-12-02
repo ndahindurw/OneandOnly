@@ -38,8 +38,9 @@ const RoomContainer = () => {
         <Navbar/>
         <div className="header-room">
             <h1>
-                All You Preference Here
+                All You Preference Chose Your Room Here
             </h1>
+            
         </div>
       <Card {...room1} />
       <Card {...room2} />

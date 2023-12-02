@@ -18,6 +18,7 @@ function Header(props) {
             <BsFillEnvelopeFill className='icon'/>
             <BsPersonCircle className='icon'/>
         </div>
+        
        </header>
     );
 }

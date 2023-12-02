@@ -1,5 +1,9 @@
+import { useNavigate } from "react-router";
 import axiosInstance from "../../Axios/axios";
 import * as jwt_decode from 'jwt-decode';
+
+
+
 
 const setToken = (token)=>{
     localStorage.setItem('token',token);
@@ -41,8 +45,13 @@ const isLoggedIn = ()=>{
         const isLogin  = Date.now() < payLoad.exp * 1000;
         return isLogin
     }
+    return false
+}
+
+const logOut = () => {
+  localStorage.clear();
 }
 
 
 
-export default {getToken,setToken,login,getUserEmail,getUserRole,isLoggedIn}
+export default {getToken,setToken,login,getUserEmail,getUserRole,isLoggedIn,logOut}
