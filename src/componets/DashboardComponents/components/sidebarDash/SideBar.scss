@@ -1,0 +1,108 @@
+$primary-color: #4b7bec;
+$accent-color: #e84118;
+$border-color: rgb(229, 229, 229);
+$hover-bg-color: #686de0;
+$gradient-start: #002E33;
+$gradient-end: #1B484B;
+$box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+$border-radius: 10px;
+
+.sidebar {
+  flex: 1;
+  // border-radius: $border-radius;
+  border: 0.5px solid $border-color;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, $gradient-start, $gradient-end);
+  box-shadow: $box-shadow;
+
+  .top {
+    height: 50px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid darken($primary-color, 10%);
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+
+    .logos {
+      
+      font-weight: bold;
+      color: whitesmoke;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 70px; 
+      
+    }
+  
+    .first {
+      color: #A3DC2F; 
+      
+  }
+  
+  .second {
+      color: #4AB0DD;
+  }
+  
+  .teritiary {
+      color: #f9B520; 
+  }
+  }
+
+  hr {
+    height: 0;
+    background-color: #ddd;
+    border: none;
+    border-bottom: 0.5px solid $border-color;
+  }
+
+  .center {
+    padding-left: 20px;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      p {
+        font-size: 12px;
+        font-weight: bold;
+        color: #fff;
+        margin-top: 15px;
+        margin-bottom: 5px;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: $hover-bg-color;
+        }
+
+        .icon {
+          font-size: 24px; 
+          color: #fff;
+          margin-right: 15px; 
+        }
+
+        a {
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+        }
+
+        span {
+          font-size: 16px;
+          font-weight: 600;
+          color: #ddd;
+        }
+      }
+    }
+  }
+}

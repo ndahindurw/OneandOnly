@@ -1,6 +1,6 @@
 import React from "react";
 import "./home.css";
-import {image0,image2,image3,image4,image5} from '../../componets/images'
+import {image0,image2,image3,image4,image5} from '../images'
 import Navbar from "../navigationBar/navbar";
 import { Link } from "react-router-dom";
 

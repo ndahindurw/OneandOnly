@@ -12,7 +12,7 @@ function NotFound() {
              Page was Not Found
              </h1> 
              <p className='error-description'>
-                 Oops! We Are Not Able To Find That Page 
+                 😒Oops! We Are Not Able To Find That Page 
              </p>
          </div>
         </div>

@@ -1,15 +1,17 @@
 import { useNavigate } from "react-router";
 import axiosInstance from "../../Axios/axios";
-import * as jwt_decode from 'jwt-decode';
+import { jwtDecode as jwt_decode } from 'jwt-decode';
 
 
 
 
 const setToken = (token)=>{
+    console.log("Here is my token to set :",token)
     localStorage.setItem('token',token);
+    return token
 }
-const getToken = (token)=>{
-    localStorage.getItem('token');
+const getToken = ()=>{
+    const token = localStorage.getItem('token');
     if(token){
         return token;
     }
@@ -28,14 +30,28 @@ const getUserEmail = ()=>{
     }
     return null
 }
-const getUserRole = ()=>{
+const getUserRole = () => {
+    console.log('getUserRole function called');
     const token = getToken();
-    if(token){
-        const payLoad = jwt_decode(token);
-        return payLoad?.authorities; 
+    console.log('Token:', token);
+
+    if (token) {
+        try {
+            const payLoad = jwt_decode(token);
+            console.log('Decoded Token Payload:', payLoad);
+            const authorities = payLoad?.authorities;
+            console.log('User Authorities:', authorities);
+            return authorities;
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
     }
-    return null
+
+    return null;
 }
+
+
 
 
 const isLoggedIn = ()=>{
@@ -54,4 +70,4 @@ const logOut = () => {
 
 
 
-export default {getToken,setToken,login,getUserEmail,getUserRole,isLoggedIn,logOut}
+export  default{getToken,setToken,login,getUserEmail,getUserRole,isLoggedIn,logOut}

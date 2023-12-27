@@ -13,25 +13,22 @@ const Signin = () => {
 
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-
+  
     try {
       const response = await authService.login(credentials);
       console.log(response?.data);
-
+  
       if (response?.data.accessToken) {
-        authService.setToken(response?.data?.accessToken);
-        console.log('setted Token ', authService.setToken())
-      
-        const payLoad = jwt_decode(response?.data?.accessToken);        
-        payLoad?.authorities==='admin' ? navigate('/availableRoom'): navigate('/Home');
-        
-    }
-    
-
+        const accessToken = response?.data?.accessToken;
+        const setTokenResult = authService.setToken(accessToken);
+        console.log('setted Token ', setTokenResult);
+  
+        const payLoad = jwt_decode(accessToken);
+        payLoad?.authorities === 'admin' ? navigate('/Dashboard') : navigate('/RequestRom');
+      }
+  
       setError(null);
     } catch (err) {
       console.error('Error during login:', err);
@@ -40,6 +37,7 @@ const Signin = () => {
       console.log(err);
     }
   };
+  
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });

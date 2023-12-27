@@ -1,0 +1,32 @@
+.Landing{
+
+   display: flex;
+   .homeContent{
+     
+      flex: 6;
+      .widgets{
+         display: flex ;
+         padding: 30px;
+         gap: 20px;
+      }
+   }
+   .listContainer{
+      -webkit-box-shadow:2px 4px 10px 1px rgba(0,0,0,0.17);
+      box-shadow: 2px 4px 10px 1px rgba(201,201,201,0.47);
+      padding: 20px;
+      margin: 20px;
+      .listUsers{
+         font-weight: 900;
+         font-size: larger;
+         color: black;
+         margin-bottom: 15px;
+      }
+      .auths{
+         display: flex;
+      //    -webkit-box-shadow:2px 4px 10px 1px rgba(0,0,0,0.17);
+      // box-shadow: 2px 4px 10px 1px rgba(201,201,201,0.47);
+      // padding: 20px;
+      // margin: 20px;
+      }
+   }
+} 

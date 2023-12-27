@@ -17,11 +17,9 @@ function Navbar() {
                     </h1>
                     <nav>
                         <ul>
-                        <li><Link to="/Home" exact>Home</Link></li>
+                        <li><Link to="/" exact>Home</Link></li>
                         <li><Link to="/Contacts" exact>Contacts</Link></li>
-                        <li><Link to="/availableRoom" exact>Bookings</Link></li>
-                        <li><Link to="/Dashboard" exact>Dashboard</Link></li>
-                        <li><Link to="/" exact>Login</Link></li>                      
+                        <li><Link to="/Login" exact>Login</Link></li>                      
                         </ul>
                     </nav>
                 </div>

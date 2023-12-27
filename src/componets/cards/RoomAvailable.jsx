@@ -31,6 +31,7 @@ const RoomContainer = () => {
     imageSrc: image5,
     status: "Occupied",
     bookedBy: "Marketing Department",
+    purpose:'...purpose'
   };
 
   return (
