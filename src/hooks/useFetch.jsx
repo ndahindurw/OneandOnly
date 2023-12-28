@@ -25,6 +25,7 @@ function useFetch({url}) {
           } catch (error) {
             console.error('Error fetching data:', error);
             setLoading(false);
+            setError(error); 
           }
         };
       

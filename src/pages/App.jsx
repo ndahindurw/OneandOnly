@@ -34,9 +34,9 @@ function App() {
           <Route path="signupPage" element={<Signup />} />
           <Route index path="Dashboard" element={<Landing />} />
 
-          <Route path="users/*">
+          <Route path="Users/*">
             <Route  element={<Landing />} />
-            <Route path="List-users"  element={<Table title="List-users" />} />
+            <Route path="ListAllusers"  element={<Table title="ListAllusers" />} />
             <Route path=":userId" element={<Setting />} />
             <Route path="new-user" element={<Signup inputs={UserInputs} title="Add New user" />} />
           </Route>
@@ -49,6 +49,7 @@ function App() {
           <Route path="Rooms/*">
             <Route path="List-Availble-Rooms" element={<Table title="Available Some Rooms" />} />
             <Route path="List-Booked-Rooms" element={<Table title="Booked  Rooms" />} />
+
             <Route path="new-rooms" element={<New inputs={RoomInputs} title="Add Some Rooms Here" />} />
           </Route>
 

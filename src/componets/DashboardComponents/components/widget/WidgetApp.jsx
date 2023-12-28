@@ -10,15 +10,15 @@ import { Link } from 'react-router-dom';
 
 function Widget({type}) {
     let data;
-    const number = 100
+    const number_of_user = 26
     const diff = 50
 
     switch (type) {
-      case 'List-users':
+      case 'User':
         data = {
           title: "List-users",
           isMoney: false,
-          link: "/users/List-users",
+          link: "/users/ListAllusers",
           icon: <IoIosPerson className='icon' style={{background: "rgba(0,128,0,0.2)", color:"green"}} />
         };
         break;
@@ -57,7 +57,7 @@ function Widget({type}) {
                     {data.title}
                 </span>
                 <span className="counter">
-                    {data.isMoney }{number}
+                    {data.isMoney }{number_of_user}
                 </span>
                 <span className="link">
                     <Link to={data.link} className='link-title'>List All</Link>
