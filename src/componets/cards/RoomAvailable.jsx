@@ -2,6 +2,7 @@ import React from "react";
 import Card from "./Card";
 import Navbar from "../navigationBar/navbar";
 import { image2, image4, image5 } from "../images";
+import DateSchuderer from "./DateSchuderer";
 
 const RoomContainer = () => {
   const room1 = {
@@ -43,9 +44,11 @@ const RoomContainer = () => {
             </h1>
             
         </div>
+        
+        <DateSchuderer/>
       <Card {...room1} />
-      <Card {...room2} />
-      <Card {...room3} />
+
+
     </div>
   );
 };

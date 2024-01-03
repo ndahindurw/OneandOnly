@@ -72,9 +72,9 @@ const Signin = () => {
             Login
           </button>
           <div className="signup-link">
-          <Link to="/signupPage" className="account-link">
+          {/* <Link to="/signupPage" className="account-link">
             Don't have an account? Sign up here.
-          </Link>
+          </Link> */}
         </div>
         </form>
         

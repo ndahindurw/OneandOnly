@@ -1,71 +1,71 @@
-// Inside the AddAuthority component
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './AddAuthority.scss'; 
 import axiosInstance from '../../../../Axios/axios';
+import useFetch from '../../../../hooks/useFetch';
+import authService from '../../../Services/authService';
 
-const AddAuthority = () => {
+const AddAuthority = ({data ,url}) => {
   const [credentials, setCredentials] = useState({
     authority: '',
-    user: '',
+    user: ''
   });
 const [successMessage,setSuccessMessage]=useState(null)
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleAuthority = async (e) => {
-    e.preventDefault();
+    const {data:userAuthority }  =  useFetch({url:process.env.REACT_APP_AUTHORITY_LIST})
+    const {data:UserList}  =  useFetch({url:process.env.REACT_APP_FETCH_USER_DATA_URL})
 
-    try {
-      const response = await axiosInstance.post(
-        process.env.REACT_APP_ADD_AUTH_ADMIN,
-        credentials
-      );
-      console.log(response?.data);
-
-      if (response?.data === 200) {
-        alert('Authority Added' + response.data.user);
-        setError(null)
-        setSuccessMessage("Successfully saved")
+    const handleAuthority = async (e) => {
+      e.preventDefault();
+    
+      try {
+        const response = await axiosInstance.post(
+          process.env.REACT_APP_ADD_ROLE,
+          credentials
+        );
+    
+        if (response.status === 200) {
+          setError(null);
+          setSuccessMessage('Successfully saved');
+        } else {
+          // Handle other response status codes or errors
+          console.error('Unexpected response:', response);
+        }
+      } catch (err) {
+        console.error('Error during login:', err);
+        const errorMessage = err.response?.data?.message || 'Bad Credentials';
+        setError(errorMessage);
       }
-
-    } catch (err) {
-      console.error('Error during login:', err);
-      const errorMessage = err.response?.data?.message || 'Bad Credentials';
-      setError(errorMessage);
-      console.log(err);
-    }
-  };
+    };
+    
 
   const handleChange = (e) => {
+    console.log('Handling change:', e.target.name, e.target.value);
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+  
 
   return (
     <div className="auth-container">
       <div className="Auth-form-container">
         <form className="form-container" onSubmit={handleAuthority}>
           <h2>Map Auth to users</h2>
-          <input
-            type="number"
-            placeholder="Enter authority"
-            name="authority"
-            value={credentials.authority}
-            required
-            className="input-len"
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            placeholder="Enter User"
-            name="user"
-            value={credentials.user}
-            required
-            className="input-len"
-            onChange={handleChange}
-          />
+          <select name='authority' onChange={handleChange}>
+            <option>Select Authority</option>
+            {userAuthority && userAuthority.map(item => (
+              <option key={item.authority} value={item.authority}>{item.authorityNo} {item.authorityName}</option>
+            ))}
+          </select>
+          <select name="user" onChange={handleChange}>
+            <option>Select user</option>
+            {UserList && UserList.map(user => (
+              <option key={user.userNo} value={user.staffID}>{user.staffID} {user.fullnames}</option>
+            ))}
+          </select>
           {successMessage && <div className="success-message">{successMessage}</div>}
-           {error && <div className="error-message">{error}</div>}
+          {error && <div className="error-message">{error}</div>}
           <button type="submit" className="green-btn">
             Add Authority
           </button>

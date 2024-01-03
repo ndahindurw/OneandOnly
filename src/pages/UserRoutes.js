@@ -4,7 +4,7 @@ import authService from '../componets/Services/authService';
 
 function UserRoutes({children}) {
     return (
-        authService.isLoggedIn() ? children : <Navigate to ="/"/>
+        authService.isLoggedIn() ? children : <Navigate to ="/Login"/>
     );
 }
 

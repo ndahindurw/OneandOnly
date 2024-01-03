@@ -1,4 +1,4 @@
-import BookForm from "../componets/Bookings/BookForm";
+
 import {
   BookInputs,
   RoomInputs,

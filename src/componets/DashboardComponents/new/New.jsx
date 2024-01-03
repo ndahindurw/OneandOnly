@@ -5,11 +5,20 @@ import { FaFolderOpen } from 'react-icons/fa';
 import './New.scss';
 import axios from 'axios';
 import axiosInstance from '../../../Axios/axios';
-import { BookInputs, RoomInputs, UserInputs } from '../components/FormSource';
+import { RoomInputs } from '../components/FormSource';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function New({ inputs, title }) {
-  const [selectedImage, setSelectedImage] = useState(null); // Updated initial state
-  const [formInputs, setFormInputs] = useState({});
+function New({ title }) {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  const [formInputs, setFormInputs] = useState({
+    roomLocation: '',
+    capacity: 0,
+    roomDescription: '',
+  });
 
   const handleChanges = (e) => {
     setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
@@ -17,55 +26,68 @@ function New({ inputs, title }) {
 
   function handleChangesImage(e) {
     const file = e.target.files[0];
+
     if (file) {
+      const newFormData = new FormData();
+
+      newFormData.append('file', file);
+      newFormData.append('roomDescription', formInputs.roomDescription);
+      newFormData.append('roomLocation', formInputs.roomLocation);
+      newFormData.append('capacity', formInputs.capacity);
+
+      console.log(formInputs);
+      setFormInputs({ ...formInputs, file: newFormData });
       setSelectedImage(URL.createObjectURL(file));
     } else {
-      // Handle case where the user removed the selected file
-      setSelectedImage(null); // or an empty string as appropriate
+      setSelectedImage(null);
     }
   }
+
+  const notify = () => {
+    toast.success('Success', { position: toast.POSITION.TOP_CENTER });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-
-    Object.entries(formInputs).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    formData.append('roomImage', selectedImage);
+    if (!formInputs.roomLocation || !formInputs.capacity || !formInputs.roomDescription || !selectedImage) {
+      setError('Please fill in all the fields and upload an image.');
+      return;
+    }
 
     switch (title) {
       case 'Ad New user':
         try {
-          const res = await axios.post(process.env.REACT_APP_API_ENDPOINT, formInputs);
-          console.log(title, selectedImage, formInputs);
-          console.log("User added successfully:", res.data);
+          const res = await axiosInstance.post(process.env.REACT_APP_API_ENDPOINT, formInputs.file);
+          console.log('User added successfully:', res.data);
         } catch (error) {
-          console.error("Error adding user:", error);
+          console.error('Error adding user:', error);
         }
         break;
 
       case 'Add Some Rooms Here':
         try {
-          const [imageRes, roomsRes] = await Promise.all([
-            axios.post(process.env.REACT_APP_API_ENDPOINT_ADDROOM_IMAGE, selectedImage, {
+          const ResponseData = await axios.post(
+            process.env.REACT_APP_API_ENDPOINT_ADDROOMS,
+            formInputs.file,
+            {
               headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
               },
-            }),
-            axios.post(process.env.REACT_APP_API_ENDPOINT_ADDROOMS, formData),
-          ]);
-
-          console.log("Image upload response:", imageRes.data);
-          console.log("Rooms added successfully:", roomsRes.data);
+            }
+          );
+          console.log('Rooms added successfully:', ResponseData.data);
+          console.log(title, selectedImage, formInputs);
+          setSuccessMessage('Rooms added successfully');
         } catch (error) {
-          console.error("Error adding rooms:", error);
+          console.error('Error adding rooms:', error);
+          setError('Failed to add rooms. Please try again.');
         }
         break;
 
       default:
-        console.error("Invalid title:", title);
+        console.error('Invalid title:', title);
     }
   };
 
@@ -81,26 +103,26 @@ function New({ inputs, title }) {
         <div className="bottom">
           <div className="left">
             <img
-              src={selectedImage || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
+              src={selectedImage || 'https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg'}
               alt=""
             />
           </div>
 
           <div className="right">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
               <div className="formInput">
                 <label htmlFor="file">Image:<FaFolderOpen className="icon" /></label>
                 <input
                   type="file"
                   id="file"
                   style={{ display: 'none' }}
-                  name='roomImage'
+                  name="file"
                   className="inputRoom"
                   onChange={handleChangesImage}
                 />
               </div>
 
-              {inputs.map((i) => (
+              {RoomInputs.map((i) => (
                 <div className="formInput" key={i.id}>
                   <label>{i.label}</label>
                   <input
@@ -112,7 +134,9 @@ function New({ inputs, title }) {
                   />
                 </div>
               ))}
-              <button type="submit">Approve</button>
+              {successMessage && <div className="success-message">{successMessage}</div>}
+              {error && <div className="error-message">{error}</div>}
+              <button type="submit" onClick={notify}>Send</button>
             </form>
           </div>
         </div>
