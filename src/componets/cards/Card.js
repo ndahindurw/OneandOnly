@@ -98,12 +98,12 @@ const Card = ({ title, description, handleChange }) => {
   const handleBooking = async () => {
     try {
       const storedToken = authService.getToken();
-
+  
       if (!storedToken) {
         setError("User not authenticated.");
         return;
       }
-
+  
       const bookingPayload = {
         room: {
           roomID: selectedRoom.roomID,
@@ -115,7 +115,25 @@ const Card = ({ title, description, handleChange }) => {
         endTime: selectedRoom.endTime,
         purpose: selectedRoom.purpose,
       };
-
+  
+   
+      const overlappingBookings = inptform.filter((booking) => {
+        const existingStartTime = new Date(booking.startTime);
+        const existingEndTime = new Date(booking.endTime);
+        const newStartTime = new Date(selectedRoom.startTime);
+        const newEndTime = new Date(selectedRoom.endTime);
+  
+        return (
+          existingStartTime < newEndTime && existingEndTime > newStartTime
+        );
+      });
+  
+      if (overlappingBookings.length > 0) {
+        setError("Selected time range overlaps with existing booking.");
+        
+        return;
+      }
+  
       const response = await axios.post(
         process.env.REACT_APP_BOOK_ENDPOINT,
         bookingPayload,
@@ -126,7 +144,7 @@ const Card = ({ title, description, handleChange }) => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         setSuccessMessage("Booking successful!");
       }
@@ -134,6 +152,7 @@ const Card = ({ title, description, handleChange }) => {
       setError("Error in the request:", error);
     }
   };
+  
 
   return (
     <div className="card">
@@ -210,6 +229,8 @@ const Card = ({ title, description, handleChange }) => {
           />
         </div>
         <div>
+        {successMessage && <div className="success-message">{successMessage}</div>}
+          {error && <div className="error-message">{error}</div>}
           <button className="book-btn" onClick={handleBooking}>
             Book Now
           </button>

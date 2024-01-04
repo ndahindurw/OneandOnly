@@ -55,13 +55,13 @@ const [successMessage,setSuccessMessage]=useState(null)
           <select name='authority' onChange={handleChange}>
             <option>Select Authority</option>
             {userAuthority && userAuthority.map(item => (
-              <option key={item.authority} value={item.authority}>{item.authorityNo} {item.authorityName}</option>
+              <option key={item.authority} value={item.authorityNo}> {item.authorityName}</option>
             ))}
           </select>
           <select name="user" onChange={handleChange}>
             <option>Select user</option>
             {UserList && UserList.map(user => (
-              <option key={user.userNo} value={user.staffID}>{user.staffID} {user.fullnames}</option>
+              <option key={user.userNo} value={user.staffID}> {user.fullnames}</option>
             ))}
           </select>
           {successMessage && <div className="success-message">{successMessage}</div>}

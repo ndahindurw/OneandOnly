@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import './Table.scss';
 import useFetch from '../../../../hooks/useFetch';
-import EditPopup from '../../../signupFiles/EditPopup'; 
+import EditPopup from '../../../signupFiles/EditPopup';
 import axios from 'axios';
 
 function Table({ title, data }) {
@@ -11,19 +11,11 @@ function Table({ title, data }) {
   const [url, setUrl] = useState('');
   const [editPopupVisible, setEditPopupVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [userData, setUserData] = useState('');
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  const handleEdit = (item) => {
-    setSelectedItem(item);
-    setEditPopupVisible(true);
-  };
-
-  const handleDelete = () => {
-    // Your delete logic
-  };
-
-  const responseData = data || [];
+  const { loading: fetchLoading, data: fetchedData } = useFetch({ url });
 
   useEffect(() => {
     switch (title) {
@@ -41,18 +33,22 @@ function Table({ title, data }) {
     }
   }, [title]);
 
-  const { loading: fetchLoading, data: fetchedData } = useFetch({ url });
+  const handleEdit = (item) => {
+    setSelectedItem(item);
+    setEditPopupVisible(true);
+  };
+
+  const handleDelete = () => {
+    // Your delete logic
+  };
 
   const renderTable = () => {
     if (!fetchedData || fetchedData.length === 0) {
       return <p>No data available</p>;
     }
-  
+
     const columns = Object.keys(fetchedData[0]);
-    
-    const dataLength = fetchedData.length;
-  
-    
+
     return (
       <table className="table">
         <thead>
@@ -63,31 +59,33 @@ function Table({ title, data }) {
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          {fetchedData.map((item, index) => (
-            <tr key={index}>
-              {columns.map((column) => (
-                <td key={column}>{item[column]}</td>
-              ))}
-              <td className="button-cell">
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={() => handleEdit(item)}
-                >
-                  <FontAwesomeIcon icon={faEdit} className="s-icons" />
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={() => handleDelete(item)}
-                >
-                  <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+<tbody>
+  {fetchedData
+    .filter((item) =>
+    userData.trim() === '' ? true : 
+    Object.values(item).some((value) => 
+      typeof value === 'string' && value.toLowerCase().includes(userData.toLowerCase())
+    )
+  )
+  
+    .map((item, index) => (
+      <tr key={index}>
+        {columns.map((column) => (
+          <td key={column}>{item[column]}</td>
+        ))}
+        <td className="button-cell">
+          <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
+            <FontAwesomeIcon icon={faEdit} className="s-icons" />
+          </button>
+          <button type="button" className="btn btn-danger" onClick={() => handleDelete(item)}>
+            <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
+          </button>
+        </td>
+      </tr>
+    ))}
+</tbody>
+
+
       </table>
     );
   };
@@ -96,9 +94,12 @@ function Table({ title, data }) {
     <div className="table-container">
       <h1 className="table-title">{title}</h1>
       {fetchLoading ? (
-        <p>Loading...</p>
+        <div>Loading...</div>
       ) : (
-        <div className="table-responsive">{renderTable()}</div>
+        <div className="table-responsive">
+          <input type="search" name="Search" value={userData} onChange={(e) => setUserData(e.target.value)} />
+          {renderTable()}
+        </div>
       )}
       {editPopupVisible && (
         <EditPopup
