@@ -22,6 +22,12 @@ const BookingEditPopup = ({ bookingData, onClose, onUpdate }) => {
 
   return (
     <div className="popup-container">
+        <label>Booking ID:</label>
+      <input
+        type="text"
+        value={editedBookingData.room.bookingID}
+        onChange={(e) => handleChange('room', { ...editedBookingData.room, bookingID: e.target.value })}
+      />
       <label>Room ID:</label>
       <input
         type="text"

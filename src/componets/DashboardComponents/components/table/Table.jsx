@@ -7,6 +7,7 @@ import EditPopup from '../../../signupFiles/EditPopup';
 import axios from 'axios';
 import BookingEditPopup from './BookingEditPopup';
 import authService from '../../../Services/authService';
+import axiosInstance from '../../../../Axios/axios';
 
 function Table({ title, data }) {
   console.log('Title:', title);
@@ -22,22 +23,12 @@ function Table({ title, data }) {
   
   const handleEditPopupUpdate = async (updatedData) => {
     try {
-      const storedToken = authService.getToken();
   
-      if (!storedToken) {
-        setError('User not authenticated.');
-        return;
-      }
   
-      const response = await axios.post(
+      const response = await axiosInstance.put(
         process.env.REACT_APP_BOOK_ROOM,
         updatedData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${storedToken}`,
-          },
-        }
+       
       );
   
       if (response.status === 200) {
@@ -63,15 +54,13 @@ function Table({ title, data }) {
       case 'BookingsSomeRooms':
         setUrl(process.env.REACT_APP_FETCH_PENDING_ROOMS);
         break;
-      case 'BookingsSomeRoomsHere': // Add this case
-        setUrl(/* Your corresponding URL for BookingsSomeRoomsHere */);
-        break;
+     
       default:
         console.error('Invalid title:', title);
     }
     console.log('URL (after):', url);
     console.log('Fetched Data:', fetchedData);
-  }, [title, url]);
+  }, [title, url,successMessage]);
   
 
    const handleEdit = (item) => {

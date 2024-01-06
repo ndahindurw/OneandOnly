@@ -70,3 +70,9 @@ body.active-model {
   right: 10px;
   padding: 5px 7px;
 }
+.table-container {
+  width: 100%;
+  margin-top: -10px;
+  overflow-x: auto;
+  min-height: 500px; /* Adjust the height accordingly */
+}
