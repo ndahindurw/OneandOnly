@@ -42,8 +42,8 @@ function App() {
           </Route>
 
           <Route path="Bookings/*">
-            <Route  element={<Table title="ListBookings" />} />
-            <Route path="new-bookings" element={<New inputs={BookInputs} title="Bookings Some Rooms" />} />
+            <Route  element={<Table title="BookingsSomeRoomsHere" />} />
+            <Route path="new-bookings" element={<Table inputs={BookInputs} title="BookingsSomeRooms" />} />
           </Route>
 
           <Route path="Rooms/*">

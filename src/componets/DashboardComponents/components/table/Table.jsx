@@ -5,8 +5,11 @@ import './Table.scss';
 import useFetch from '../../../../hooks/useFetch';
 import EditPopup from '../../../signupFiles/EditPopup';
 import axios from 'axios';
+import BookingEditPopup from './BookingEditPopup';
+import authService from '../../../Services/authService';
 
 function Table({ title, data }) {
+  console.log('Title:', title);
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState('');
   const [editPopupVisible, setEditPopupVisible] = useState(false);
@@ -15,25 +18,63 @@ function Table({ title, data }) {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  const { loading: fetchLoading, data: fetchedData } = useFetch({ url });
+  const { loading: fetchLoading, data: fetchedData } = useFetch({url});
+  
+  const handleEditPopupUpdate = async (updatedData) => {
+    try {
+      const storedToken = authService.getToken();
+  
+      if (!storedToken) {
+        setError('User not authenticated.');
+        return;
+      }
+  
+      const response = await axios.post(
+        process.env.REACT_APP_BOOK_ROOM,
+        updatedData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        setError(null);
+        setSuccessMessage('Booking successfully updated!');
+      } else {
+        setError('Failed to update booking.');
+      }
+    } catch (error) {
+      console.error('Error updating booking:', error);
+      setError('Error updating booking.');
+    }
+  };
+
 
   useEffect(() => {
+    console.log('Title:', title);
+    console.log('URL (before):', url);
     switch (title) {
       case 'ListAllusers':
         setUrl(process.env.REACT_APP_FETCH_USER_DATA_URL);
         break;
-
-      case 'Bookings Some Rooms Here':
-      case 'ListBookings':
-        setUrl(process.env.REACT_APP_FETCH_ROOMS);
+      case 'BookingsSomeRooms':
+        setUrl(process.env.REACT_APP_FETCH_PENDING_ROOMS);
         break;
-
+      case 'BookingsSomeRoomsHere': // Add this case
+        setUrl(/* Your corresponding URL for BookingsSomeRoomsHere */);
+        break;
       default:
         console.error('Invalid title:', title);
     }
-  }, [title]);
+    console.log('URL (after):', url);
+    console.log('Fetched Data:', fetchedData);
+  }, [title, url]);
+  
 
-  const handleEdit = (item) => {
+   const handleEdit = (item) => {
     setSelectedItem(item);
     setEditPopupVisible(true);
   };
@@ -48,6 +89,7 @@ function Table({ title, data }) {
     }
 
     const columns = Object.keys(fetchedData[0]);
+    
 
     return (
       <table className="table">
@@ -70,9 +112,9 @@ function Table({ title, data }) {
   
     .map((item, index) => (
       <tr key={index}>
-        {columns.map((column) => (
-          <td key={column}>{item[column]}</td>
-        ))}
+      {columns.map((column) => (
+  <td key={column}>{typeof item[column] === 'object' ? JSON.stringify(item[column]) : item[column]}</td>
+))}
         <td className="button-cell">
           <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
             <FontAwesomeIcon icon={faEdit} className="s-icons" />
@@ -90,6 +132,15 @@ function Table({ title, data }) {
     );
   };
 
+  
+  
+  {editPopupVisible && (
+    <BookingEditPopup
+      bookingData={selectedItem}
+      onClose={() => setEditPopupVisible(false)}
+      onUpdate={handleEditPopupUpdate}
+    />
+  )}
   return (
     <div className="table-container">
       <h1 className="table-title">{title}</h1>
@@ -101,45 +152,20 @@ function Table({ title, data }) {
           {renderTable()}
         </div>
       )}
-      {editPopupVisible && (
-        <EditPopup
-          onClose={() => setEditPopupVisible(false)}
-          onSave={async (editedData) => {
-            try {
-              const response = await axios.post(
-                `${process.env.REACT_APP_SIGNUP}`,
-                editedData,
-                {
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
-                  },
-                }
-              );
 
-              if (response.status === 200) {
-                setError(null);
-                setSuccessMessage('Account successfully updated!');
-                console.log(response.data, response.status);
-              } else {
-                if (response.data && response.data.msg) {
-                  setError(response.data.msg);
-                } else {
-                  throw new Error('Could not Post Data');
-                }
-              }
-            } catch (err) {
-              console.error('Error during update:', err);
-              setError(err.message);
-            }
-          }}
-          data={selectedItem}
+      {editPopupVisible && (
+        <BookingEditPopup
+          bookingData={selectedItem}
+          onClose={() => setEditPopupVisible(false)}
+          onUpdate={handleEditPopupUpdate}
         />
       )}
+
       {error && <div className="error-message">{error}</div>}
       {successMessage && <div className="success-message">{successMessage}</div>}
     </div>
   );
 }
+
 
 export default Table;

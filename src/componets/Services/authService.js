@@ -51,7 +51,14 @@ const getUserRole = () => {
     return null;
 }
 
-
+const getUserInfo = () => {
+    const token = getToken();
+    if (token) {
+      const payLoad = jwt_decode(token);
+      return payLoad;
+    }
+    return null;
+  }
 
 
 const isLoggedIn = ()=>{
@@ -70,4 +77,4 @@ const logOut = () => {
 
 
 
-export  default{getToken,setToken,login,getUserEmail,getUserRole,isLoggedIn,logOut}
+export  default{getToken,setToken,getUserInfo,login,getUserEmail,getUserRole,isLoggedIn,logOut}

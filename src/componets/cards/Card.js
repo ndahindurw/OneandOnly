@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import authService from "../Services/authService";
 import axiosInstance from "../../Axios/axios";
-import "./Card.css"; // Add your CSS file path
+import "./Card.css"; 
 
 const Card = ({ title, description, handleChange }) => {
   const [error, setError] = useState(null);
@@ -17,6 +17,8 @@ const Card = ({ title, description, handleChange }) => {
   const [roomData, setRoomData] = useState([]);
   const [userData, setUserData] = useState([]);
   const [inptform, setInptForm] = useState([]);
+  const userInfo = authService.getUserInfo();
+  // console.log(userInfo.sub)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +106,15 @@ const Card = ({ title, description, handleChange }) => {
         return;
       }
   
+  
+      const userAuthorities = authService.getUserRole();
+      
+  
+      if (!userAuthorities || !userAuthorities.includes("USER")) {
+        setError("You do not have the authority to book.");
+        return;
+      }
+  
       const bookingPayload = {
         room: {
           roomID: selectedRoom.roomID,
@@ -116,21 +127,17 @@ const Card = ({ title, description, handleChange }) => {
         purpose: selectedRoom.purpose,
       };
   
-   
       const overlappingBookings = inptform.filter((booking) => {
         const existingStartTime = new Date(booking.startTime);
         const existingEndTime = new Date(booking.endTime);
         const newStartTime = new Date(selectedRoom.startTime);
         const newEndTime = new Date(selectedRoom.endTime);
   
-        return (
-          existingStartTime < newEndTime && existingEndTime > newStartTime
-        );
+        return existingStartTime < newEndTime && existingEndTime > newStartTime;
       });
   
       if (overlappingBookings.length > 0) {
         setError("Selected time range overlaps with existing booking.");
-        
         return;
       }
   
@@ -180,20 +187,15 @@ const Card = ({ title, description, handleChange }) => {
         </div>
 
         <div className="selection-box">
-          <label htmlFor="userID">Select User:</label>
-          <select
+          <label htmlFor="userID">Logged User:</label>
+          <input
             id="userID"
             name="userID"
             onChange={handleChanges}
             value={selectedRoom.userID}
-          >
-            <option value="">Select User</option>
-            {userData.map((user) => (
-              <option key={user.staffID} value={user.staffID}>
-                {user.fullnames}
-              </option>
-            ))}
-          </select>
+              placeholder={userInfo.sub}
+              readOnly
+          />
         </div>
 
         <div className="time-scheduled">

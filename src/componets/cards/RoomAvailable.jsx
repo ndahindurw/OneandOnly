@@ -38,12 +38,12 @@ const RoomContainer = () => {
   return (
     <div>
         <Navbar/>
-        <div className="header-room">
+        {/* <div className="header-room">
             <h1>
                 All You Preference Chose Your Room Here
             </h1>
             
-        </div>
+        </div> */}
         
         <DateSchuderer/>
       <Card {...room1} />
