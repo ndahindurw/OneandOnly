@@ -108,9 +108,9 @@ function Table({ title, data }) {
           <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
             <FontAwesomeIcon icon={faEdit} className="s-icons" />
           </button>
-          <button type="button" className="btn btn-danger" onClick={() => handleDelete(item)}>
+          {/* <button type="button" className="btn btn-danger" onClick={() => handleDelete(item)}>
             <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
-          </button>
+          </button> */}
         </td>
       </tr>
     ))}

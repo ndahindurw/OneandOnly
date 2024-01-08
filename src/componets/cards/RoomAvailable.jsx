@@ -45,7 +45,6 @@ const RoomContainer = () => {
             
         </div> */}
         
-        <DateSchuderer/>
       <Card {...room1} />
 
 
