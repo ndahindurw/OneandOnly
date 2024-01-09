@@ -13,6 +13,15 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-size: medium;
 }
+.bookRooms{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: xx-large;
+  font-family: 'Poppins', sans-serif;
+
+}
 
 .success-message {
   color: green;
@@ -185,4 +194,11 @@ button:hover {
 .calenderContainer .fc-event-title {
   text-decoration: none;
   list-style: none;
+}
+.custom-full-calendar {
+
+  font-family: 'Poppins', sans-serif;
+}
+.custom-day-content {
+  text-decoration: none; 
 }

@@ -32,7 +32,7 @@ const Signin = () => {
       setError(null);
     } catch (err) {
       console.error('Error during login:', err);
-      const errorMessage = err.response?.data?.message || 'Bad Credentials';
+      const errorMessage = err.response?.data?.message || 'Invalid User Account';
       setError(errorMessage);
       console.log(err);
     }

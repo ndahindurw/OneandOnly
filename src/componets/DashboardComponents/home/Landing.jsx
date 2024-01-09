@@ -17,7 +17,7 @@ function Landing({role}) {
           
                 <SideBar/>
                 <div className="homeContent">
-                    <NavbarDash />
+
                     <div className="widgets">
                         <Widget type="User"/>
                         <Widget type="ARoom"/>
