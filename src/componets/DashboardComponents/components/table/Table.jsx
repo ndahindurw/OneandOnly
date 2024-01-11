@@ -78,7 +78,7 @@ function Table({ title, data }) {
     }
 
     const columns = Object.keys(fetchedData[0]);
-    
+    console.log("HEEEHEE",columns)
 
     return (
       <table className="table">

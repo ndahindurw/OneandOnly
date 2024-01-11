@@ -22,6 +22,10 @@
   font-family: 'Poppins', sans-serif;
 
 }
+.card-image{
+  max-width: 50% ;
+  max-height: 45hv;
+}
 
 .success-message {
   color: green;

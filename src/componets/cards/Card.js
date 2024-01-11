@@ -10,6 +10,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import Booking from "../DashboardComponents/components/bookingtable/Booking";
 
 
 
@@ -30,7 +31,9 @@ const Card = ({ title, description, handleChange }) => {
   const [userData, setUserData] = useState([]);
   const [inptform, setInptForm] = useState([]);
   const userInfo = authService.getUserInfo();
+  const [selectedRoomImage, setSelectedRoomImage] = useState('');
   const [messageTimeout, setMessageTimeout] = useState(null);
+
 
   // Function to clear messages after a certain duration
   const clearMessages = () => {
@@ -98,7 +101,13 @@ const Card = ({ title, description, handleChange }) => {
   const handleChanges = (e) => {
     const value = e.target.name === 'roomID' ? parseInt(e.target.value, 10) : e.target.value;
     setSelectedRoom({ ...selectedRoom, [e.target.name]: value });
+  
+    const room = roomData.find((room) => room.roomID === value);
+    if (room) {
+      setSelectedRoomImage(room.imagePath);
+    }
   };
+  
 
 
 
@@ -129,7 +138,6 @@ const Card = ({ title, description, handleChange }) => {
         return;
       }
   
-      // Validate start time
       const selectedStartTime = new Date(selectedRoom.startTime);
       const currentDate = new Date();
   
@@ -150,7 +158,7 @@ const Card = ({ title, description, handleChange }) => {
   
       if (overlappingBookings.length > 0) {
         setError("Selected time range overlaps with existing booking.");
-        setMessageTimeout(setTimeout(clearMessages, 2000));
+        setMessageTimeout(setTimeout(clearMessages, 4000));
         return;
       }
   
@@ -180,7 +188,7 @@ const Card = ({ title, description, handleChange }) => {
   
       if (response.status === 200) {
         setSuccessMessage("Booking successful!");
-        setMessageTimeout(setTimeout(clearMessages, 2000));
+        setMessageTimeout(setTimeout(clearMessages, 4000));
         
         const updatedResponse = await axiosInstance.get(
           process.env.REACT_APP_FETCH_EVENTS
@@ -190,7 +198,7 @@ const Card = ({ title, description, handleChange }) => {
       }
     } catch (error) {
       setError("Error in the request:", error);
-      setMessageTimeout(setTimeout(clearMessages, 2000));
+      setMessageTimeout(setTimeout(clearMessages, 4000));
     }
   };
   
@@ -208,11 +216,21 @@ const Card = ({ title, description, handleChange }) => {
     end: booking.endTime,
   }));
 
+  
+  console.log("My mage", roomData[0]?.imagePath);
+
+
+  
+
   return (
     <div className="card">
       <p className="bookRooms">Book Your Room</p>
       <div className="cardContainer">
-        <img src={'https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg'} alt="Room" className="card-image" />
+      <img
+        src={selectedRoomImage || 'https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg'}
+        alt="Room"
+        className="card-image"
+      />
 
         <div className="desc">
           <div className="selection-box">
