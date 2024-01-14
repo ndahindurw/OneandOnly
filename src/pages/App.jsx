@@ -21,6 +21,7 @@ import { Routes, Route } from "react-router-dom";
 import UserRoutes from "./UserRoutes";
 import Setting from "../componets/DashboardComponents/single/settings";
 import Table from "../componets/DashboardComponents/components/table/Table";
+import { ContactPage } from "@mui/icons-material";
 // ... (your imports)
 
 function App() {
@@ -39,10 +40,11 @@ function App() {
             <Route path="ListAllusers"  element={<Table title="ListAllusers" />} />
             <Route path=":userId" element={<Setting />} />
             <Route path="new-user" element={<Signup inputs={UserInputs} title="Add New user" />} />
+           
           </Route>
 
           <Route path="Bookings/*">
-            <Route  element={<Table title="BookingsSomeRoomsHere" />} />
+            <Route  element={<Table title="BookingsSomeRooms" />} />
             <Route path="new-bookings" element={<Table inputs={BookInputs} title="BookingsSomeRooms" />} />
           </Route>
 
@@ -52,6 +54,8 @@ function App() {
 
             <Route path="new-rooms" element={<New inputs={RoomInputs} title="Add Some Rooms Here" />} />
           </Route>
+
+          <Route path="/Contacts" element={<ContactPage/>}/>
 
           <Route path="*" element={<NotFound />} />
         </Route>

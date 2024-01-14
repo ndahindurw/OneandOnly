@@ -95,9 +95,8 @@ function New({ title }) {
     <div className="new">
       <SideBar />
       <div className="newcontainer">
-        <NavbarDash />
         <div className="top">
-          <h1 className="">{title}</h1>
+          <h1 style={{marginTop:"40px"}}>{title}</h1>
         </div>
 
         <div className="bottom">

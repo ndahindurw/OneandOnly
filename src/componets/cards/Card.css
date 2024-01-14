@@ -206,3 +206,16 @@ button:hover {
 .custom-day-content {
   text-decoration: none; 
 }
+.popoverStyle{
+  z-index: 99999 !important;
+}
+
+.cardss{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  flex-wrap: wrap;
+}
+

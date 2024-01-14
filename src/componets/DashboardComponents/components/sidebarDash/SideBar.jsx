@@ -10,7 +10,7 @@ import { TbPower } from 'react-icons/tb';
 import { FaChartLine } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-function SideBar(props) {
+function SideBar({onSignupClick}) {
   return (
     <div className="sidebar">
       
@@ -34,11 +34,11 @@ function SideBar(props) {
         <ul>
           <p className="title">List</p>
           <li>
-            <Link to="/users/new-user">
-              <FaCircleUser className="icon" />
-              <span className="Dashbord">Users</span>
-            </Link>
-          </li>
+        <a onClick={() => onSignupClick()}>
+            <FaCircleUser className="icon" />
+            <span className="Dashbord">Signup</span>
+        </a>
+    </li>
         </ul>
         <ul>
           <li>
