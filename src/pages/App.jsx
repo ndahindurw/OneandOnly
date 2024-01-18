@@ -22,6 +22,7 @@ import UserRoutes from "./UserRoutes";
 import Setting from "../componets/DashboardComponents/single/settings";
 import Table from "../componets/DashboardComponents/components/table/Table";
 import { ContactPage } from "@mui/icons-material";
+import ContactP from "../componets/signupFiles/ContactP";
 // ... (your imports)
 
 function App() {
@@ -34,10 +35,15 @@ function App() {
           <Route path="RequestRom" element={<UserRoutes><RoomContainer /></UserRoutes>} />
           <Route path="signupPage" element={<Signup />} />
           <Route path="Contacts" element={<ContactPage/>}/>
-          <Route index path="Dashboard" element={<Landing />} />
+          <Route index path="Dashboard" element={
+          <AdminRoute><Landing /></AdminRoute>
+          } />
 
           <Route path="Users/*">
-            <Route  element={<Landing />} />
+            <Route  element={
+              
+            <Landing />
+            } />
             <Route path="ListAllusers"  element={<Table title="ListAllusers" />} />
             <Route path=":userId" element={<Setting />} />
             <Route path="new-user" element={<Signup inputs={UserInputs} title="Add New user" />} />
@@ -56,11 +62,17 @@ function App() {
             <Route path="new-rooms" element={<New inputs={RoomInputs} title="Add Some Rooms Here" />} />
           </Route>
 
+         
+
           
 
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="/ContactsPage" element={
+            <ContactP/>
+          }/>
       </Routes>
+      
     </div>
   );
 }

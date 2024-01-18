@@ -20,8 +20,7 @@ function Landing() {
             <div className="homeContent">
                 <div className="widgets">
                     <Widget type="User"/>
-                    <Widget type="ARoom"/>
-                    <Widget type="BRoom"/>                       
+                    <Widget type="ARoom"/>                    
                 </div>
                 <div className="listContainer">
                     <div className='auths'>

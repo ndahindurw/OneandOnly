@@ -1,10 +1,13 @@
 import React from 'react';
 import './ContactPage.scss';
+import Navbar from '../navigationBar/navbar';
 
-const ContactPage = () => {
+const ContactP = () => {
   console.log("hereeeeeee am i  Lord  speak you servant  is hearing ")
   return (
-    <div className="contact-container">
+    <div>
+      <Navbar/>
+      <div className="contact-container">
       <h1>Contact Us</h1>
       <form className="contact-form">
         <label htmlFor="name">Name:</label>
@@ -19,7 +22,8 @@ const ContactPage = () => {
         <button type="submit">Submit</button>
       </form>
     </div>
+    </div>
   );
 };
 
-export default ContactPage;
+export default ContactP;

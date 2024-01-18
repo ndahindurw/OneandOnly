@@ -399,43 +399,41 @@ console.log("roooooooooom", roomData);
         </div>
       </div>
 
-      <div style={{ borderRadius: "none", width: "80%", height: "500px", marginTop: "20px" }} className="cardContainer">
-        <FullCalendar
-          className="custom-full-calendar"
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          events={bookedEvents}
-          headerToolbar={{
-            start: "today prev,next",
-            center: "title",
-            end: "dayGridMonth,timeGridWeek"
-          }}
-          initialView="dayGridMonth"
-          dayCellContent={(arg) => {
-            return (
-              <div className="custom-day-content">
-                {arg.dayNumberText}
-              </div>
-            );
-          }}
+      <div style={{ borderRadius: "none", width: "85%", height: "500px", marginTop: "20px" }} className="cardContainer">
+      <FullCalendar
+  className="custom-full-calendar"
+  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+  events={bookedEvents}
+  headerToolbar={{
+    start: "today prev,next",
+    center: "title",
+    end: "dayGridMonth,timeGridWeek,timeGridDay"
+  }}
+  initialView="dayGridMonth"
+ 
+  dayCellContent={(arg) => {
+    return (
+      <div className="custom-day-content">
+        {arg.dayNumberText}
+      </div>
+    );
+  }}
+  eventDidMount={(info) => {
+    return new bootstrap.Popover(info.el, {
+      title: info.event.title,
+      placement: "auto",
+      trigger: "hover",
+      customClass: "popoverStyle",
+      content: `
+        <p>Start Time: ${info.event.start}</p>
+        <p>End Time: ${info.event.end}</p>
+        <p>Status: Booked</p>
+      `,
+      html: true,
+    });
+  }}
+/>
 
-          eventDidMount={(info)=>{
-            
-            return new bootstrap.Popover(info.el,{
-              title: info.event.title,
-              placement: "auto",
-              trigger: "hover",
-              customClass:"popoverStyle",
-              content: `
-      <p>Start Time: ${info.event.start}</p>
-      <p>End Time: ${info.event.end}</p>
-      <p>Status: Booked</p>
-    `,
-              html:true,
-            }
-            
-
-  )}}
-        />
       </div>
     </div>
   );

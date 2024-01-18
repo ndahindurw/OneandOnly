@@ -41,8 +41,8 @@ function Table({ title, data }) {
       case 'ListAllusers':
         setUrl(process.env.REACT_APP_FETCH_USER_DATA_URL);
         break;
-      case 'BookingsSomeRooms':
-        setUrl(process.env.REACT_APP_FETCH_PENDING_ROOMS);
+      case 'Available Some Rooms':
+        setUrl(process.env.REACT_APP_FETCH_ROOMS);
         break;
       default:
         console.error('Invalid title:', title);
@@ -157,6 +157,7 @@ function Table({ title, data }) {
               Next
             </button>
           </div>
+          
         </>
       </div>
     );

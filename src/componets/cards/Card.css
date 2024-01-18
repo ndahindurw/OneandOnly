@@ -170,7 +170,7 @@ button:hover {
   cursor: pointer;
 }
 .calenderContainer{
-  width: 85%;
+  width: 95%;
   padding: 20px;
   margin: 20px;
   margin-left: 100px;
@@ -210,6 +210,10 @@ button:hover {
   z-index: 99999 !important;
 }
 
+.a{
+  color: #212529 !important;
+}
+
 .cardss{
   display: flex;
   align-items: center;
@@ -218,4 +222,30 @@ button:hover {
   margin: 10px;
   flex-wrap: wrap;
 }
+.custom-day-content {
+  text-decoration: none;
+}
+
+/* Add styles for FullCalendar */
+.custom-full-calendar {
+  width: 100%;
+  height: 600px; /* Adjust the height as needed */
+  margin-top: 20px;
+}
+
+/* Style for day content */
+.custom-day-content {
+  font-size: 16px; /* Adjust the font size as needed */
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* Style for popover content */
+.popoverStyle {
+  max-width: 300px;
+  padding: 10px;
+  text-decoration: none;
+}
+
 

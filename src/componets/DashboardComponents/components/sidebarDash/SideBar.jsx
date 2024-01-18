@@ -56,30 +56,8 @@ function SideBar({onSignupClick}) {
             </Link>
           </li>
         </ul>
-        <ul>
-          <li>
-            <Link to="/stats">
-              <FaChartLine className="icon" />
-              <span className="Dashbord">Stats</span>
-            </Link>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <Link to="/settings">
-              <CiSettings className="icon" />
-              <span className="Dashbord">Settings</span>
-            </Link>
-          </li>
-        </ul>
-        <ul>
-          <li>
-            <Link to="/help">
-              <FaHands className="icon" />
-              <span className="Dashbord">Help</span>
-            </Link>
-          </li>
-        </ul>
+        
+       
         <ul>
           <li>
             <Link to="/Login">
