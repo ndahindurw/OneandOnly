@@ -2,6 +2,7 @@ import React from 'react';
 import './ContactPage.scss';
 
 const ContactPage = () => {
+  console.log("hereeeeeee am i  Lord  speak you servant  is hearing ")
   return (
     <div className="contact-container">
       <h1>Contact Us</h1>

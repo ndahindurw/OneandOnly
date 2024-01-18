@@ -21,13 +21,14 @@ function New({ title }) {
   });
 
   const handleChanges = (e) => {
-    setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
-  };
+    setFormInputs({ ...formInputs, [e.target.name]: e.target.name === 'capacity' ? parseInt(e.target.value, 10) : e.target.value });
+};
 
-  function handleChangesImage(e) {
-    const file = e.target.files[0];
 
-    if (file) {
+const handleChangesImage = (e) => {
+  const file = e.target.files[0];
+
+  if (file) {
       const newFormData = new FormData();
 
       newFormData.append('file', file);
@@ -35,13 +36,21 @@ function New({ title }) {
       newFormData.append('roomLocation', formInputs.roomLocation);
       newFormData.append('capacity', formInputs.capacity);
 
-      console.log(formInputs);
-      setFormInputs({ ...formInputs, file: newFormData });
+      setFormInputs({
+          ...formInputs,
+          file: newFormData,
+          roomLocation: formInputs.roomLocation,
+          capacity: formInputs.capacity,
+          roomDescription: formInputs.roomDescription,
+      });
+
       setSelectedImage(URL.createObjectURL(file));
-    } else {
+  } else {
       setSelectedImage(null);
-    }
   }
+};
+
+
 
   const notify = () => {
     toast.success('Success', { position: toast.POSITION.TOP_CENTER });
@@ -49,47 +58,45 @@ function New({ title }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!formInputs.roomLocation || !formInputs.capacity || !formInputs.roomDescription || !selectedImage) {
       setError('Please fill in all the fields and upload an image.');
       return;
     }
-
-    switch (title) {
-      case 'Ad New user':
-        try {
-          const res = await axiosInstance.post(process.env.REACT_APP_API_ENDPOINT, formInputs.file);
-          console.log('User added successfully:', res.data);
-        } catch (error) {
-          console.error('Error adding user:', error);
+  
+    try {
+      const formData = new FormData();
+  
+      // Append formInputs values to formData
+      formData.append('file', formInputs.file.get('file')); // Assuming 'file' is the key used in the FormData
+      formData.append('roomLocation', formInputs.roomLocation);
+      formData.append('capacity', formInputs.capacity);
+      formData.append('roomDescription', formInputs.roomDescription);
+  
+      // Log the formData for debugging
+      console.log('Form Data:', formData);
+  
+      const responseData = await axios.post(
+        process.env.REACT_APP_API_ENDPOINT_ADDROOMS,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
+          },
         }
-        break;
-
-      case 'Add Some Rooms Here':
-        try {
-          const ResponseData = await axios.post(
-            process.env.REACT_APP_API_ENDPOINT_ADDROOMS,
-            formInputs.file,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
-              },
-            }
-          );
-          console.log('Rooms added successfully:', ResponseData.data);
-          console.log(title, selectedImage, formInputs);
-          setSuccessMessage('Rooms added successfully');
-        } catch (error) {
-          console.error('Error adding rooms:', error);
-          setError('Failed to add rooms. Please try again.');
-        }
-        break;
-
-      default:
-        console.error('Invalid title:', title);
+      );
+  
+      console.log('Rooms added successfully:', responseData.data);
+      console.log(title, selectedImage, formInputs);
+      setSuccessMessage('Rooms added successfully');
+    } catch (error) {
+      console.error('Error adding rooms:', error);
+      setError('Failed to add rooms. Please try again.');
     }
   };
+  
+
 
   return (
     <div className="new">
@@ -120,6 +127,7 @@ function New({ title }) {
                   onChange={handleChangesImage}
                 />
               </div>
+              
 
               {RoomInputs.map((i) => (
                 <div className="formInput" key={i.id}>

@@ -38,6 +38,8 @@ const Card = ({ title, description, handleChange }) => {
   const userInfo = authService.getUserInfo();
   const [selectedRoomImage, setSelectedRoomImage] = useState('');
   const [messageTimeout, setMessageTimeout] = useState(null);
+  const [isBookingDisabled, setIsBookingDisabled] = useState(false);
+  const [previousRoomID, setPreviousRoomID] = useState(null);
 
 
   const clearMessages = () => {
@@ -124,48 +126,80 @@ const Card = ({ title, description, handleChange }) => {
     }));
   }, []);
 
+  
+
+  useEffect(() => {
+    const overlappingBookingsForSameUser = inptform.filter((booking) => {
+      const existingStartTime = new Date(booking.startTime);
+      const existingEndTime = new Date(booking.endTime);
+      const newStartTime = new Date(selectedRoom.startTime);
+      const newEndTime = new Date(selectedRoom.endTime);
+  
+      // Check for overlaps (removed the condition for the same room and user)
+      const isOverlap = existingStartTime < newEndTime && existingEndTime > newStartTime;
+  
+      // Remove the condition for exact match
+      return isOverlap;
+    });
+  
+   
+  }, [selectedRoom.startTime, selectedRoom.endTime, inptform, selectedRoom.userID]);
+  
+  
   const handleBooking = async () => {
     console.log("Room ID before booking:", selectedRoom.roomID);
     try {
       const storedToken = authService.getToken();
-
+  
       if (!storedToken) {
         setError("User not authenticated.");
         return;
       }
-
+  
       const userAuthorities = authService.getUserRole();
-      console.log(userAuthorities);
-
+      console.log("Token", storedToken);
+  
       if (!userAuthorities || !userAuthorities.includes("user")) {
         setError("You do not have the authority to book.");
         return;
       }
-
+  
       const selectedStartTime = new Date(selectedRoom.startTime);
       const currentDate = new Date();
-
+  
       if (selectedStartTime <= currentDate) {
         setError("Please select a start time after the current date and time.");
-        setMessageTimeout(setTimeout(clearMessages, 2000));
+        setMessageTimeout(setTimeout(clearMessages, 5000));
         return;
       }
-
+  
+      // Check for overlapping bookings
       const overlappingBookings = inptform.filter((booking) => {
         const existingStartTime = new Date(booking.startTime);
         const existingEndTime = new Date(booking.endTime);
         const newStartTime = new Date(selectedRoom.startTime);
         const newEndTime = new Date(selectedRoom.endTime);
-
+  
         return existingStartTime < newEndTime && existingEndTime > newStartTime;
       });
-
-      if (overlappingBookings.length > 0) {
-        setError("Selected time range overlaps with existing booking.");
-        setMessageTimeout(setTimeout(clearMessages, 4000));
+  
+      // Check if there is an overlapping booking for the same user
+      const overlappingBookingForSameUser = overlappingBookings.find(
+        (booking) => booking.user.staffID === selectedRoom.userID
+      );
+  
+      if (overlappingBookingForSameUser) {
+        setError("You already have a booking at this time, but you can book another room.");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
         return;
       }
-
+  
+      if (overlappingBookings.length > 0) {
+        setError("Selected time range overlaps with existing booking.");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+        return;
+      }
+  
       const bookingPayload = {
         room: {
           roomID: selectedRoom.roomID,
@@ -176,10 +210,8 @@ const Card = ({ title, description, handleChange }) => {
         startTime: selectedRoom.startTime,
         endTime: selectedRoom.endTime,
         purpose: selectedRoom.purpose,
-        status: "Confirmed Booked Room",
       };
-
-
+  
       const response = await axios.post(
         process.env.REACT_APP_BOOK_ENDPOINT,
         bookingPayload,
@@ -190,41 +222,76 @@ const Card = ({ title, description, handleChange }) => {
           },
         }
       );
-
+  
       if (response.status === 200) {
         setSuccessMessage("Booking successful!");
-        setMessageTimeout(setTimeout(clearMessages, 4000));
-
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+  
         const updatedResponse = await axiosInstance.get(
           process.env.REACT_APP_FETCH_EVENTS
         );
-
+  
         setInptForm(updatedResponse.data);
       }
     } catch (error) {
       setError("Error in the request:", error);
-      setMessageTimeout(setTimeout(clearMessages, 4000));
+      setMessageTimeout(setTimeout(clearMessages, 5000));
     }
   };
-
-
+  
 
   const scrollToBookingForm = () => {
     document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
   };
 
+  
+const calculateBookedHours = (bookings) => {
+  const bookedHours = {};
+
+  bookings.forEach((booking) => {
+    const { roomID, startTime, endTime } = booking;
+    const startFormatted = new Date(startTime).toISOString();
+    const endFormatted = new Date(endTime).toISOString();
+
+    if (!bookedHours[roomID]) {
+      bookedHours[roomID] = [];
+    }
+
+    bookedHours[roomID].push({ startTime: startFormatted, endTime: endFormatted });
+  });
+
+  return bookedHours;
+};
+
+
+const bookedHours = calculateBookedHours(inptform);
 
 
 
-  const bookedEvents = inptform.map((booking) => ({
-   // id: booking.bookingID,
-     title: booking.room.roomLocation,
-    start: booking.startTime,
-    end: booking.endTime,
-  }));
 
-console.log("Roominptform",inptform)
-  console.log("My mage", roomData[0]?.imagePath);
+const bookedEvents = roomData.reduce((events, room) => {
+  const roomLocation = room.roomLocation || 'Unknown Room';
+
+  if (room.bookings && room.bookings.length > 0) {
+    const roomEvents = room.bookings.map((booking) => {
+      const start = booking.startTime ? new Date(booking.startTime) : undefined;
+      const end = booking.endTime ? new Date(booking.endTime) : undefined;
+
+      return {
+        title: roomLocation,
+        start: start,
+        end: end,
+      };
+    });
+
+    return events.concat(roomEvents);
+  } else {
+    return events;
+  }
+}, []);
+
+console.log("bookedEvents", bookedEvents);
+console.log("roooooooooom", roomData);
 
 
 
@@ -234,7 +301,7 @@ console.log("Roominptform",inptform)
       <p className="bookRooms">Book Your Room</p>
       
       <div className="cardss" >
-      <RoomReviewCard roomData={roomData} scrollToBookingForm={scrollToBookingForm} />
+      <RoomReviewCard roomData={roomData} bookedHours={bookedHours} inptform={inptform} />
       </div>
       
       <div className="cardContainer">
@@ -243,6 +310,8 @@ console.log("Roominptform",inptform)
           alt="Room"
           className="card-image"
         />
+
+        
 
         <div className="desc">
           <div className="selection-box">
@@ -306,9 +375,10 @@ console.log("Roominptform",inptform)
               name="purpose"
               value={selectedRoom.purpose}
               onChange={handleChanges}
+              rows="6"
             />
           </div>
-          <div className="time-scheduled">
+          {/* <div className="time-scheduled">
             <label htmlFor="purpose">Status:</label>
             <div
               type="text"
@@ -318,13 +388,13 @@ console.log("Roominptform",inptform)
               onChange={handleChanges}
 
             />
-          </div>
+          </div> */}
           <div>
             {successMessage && <div className="success-message">{successMessage}</div>}
             {error && <div className="error-message">{error}</div>}
-            <button className="book-btn" onClick={handleBooking}>
-              Book Now 
-            </button>
+            <button className="book-btn" onClick={handleBooking} disabled={isBookingDisabled}>
+  Book Now
+</button>
           </div>
         </div>
       </div>
@@ -337,7 +407,7 @@ console.log("Roominptform",inptform)
           headerToolbar={{
             start: "today prev,next",
             center: "title",
-            end: "dayGridMonth,timeGridWeek,timeGridDay"
+            end: "dayGridMonth,timeGridWeek"
           }}
           initialView="dayGridMonth"
           dayCellContent={(arg) => {

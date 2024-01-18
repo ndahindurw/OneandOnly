@@ -33,6 +33,7 @@ function App() {
           <Route path="Login" element={<Signin />} />
           <Route path="RequestRom" element={<UserRoutes><RoomContainer /></UserRoutes>} />
           <Route path="signupPage" element={<Signup />} />
+          <Route path="Contacts" element={<ContactPage/>}/>
           <Route index path="Dashboard" element={<Landing />} />
 
           <Route path="Users/*">
@@ -55,7 +56,7 @@ function App() {
             <Route path="new-rooms" element={<New inputs={RoomInputs} title="Add Some Rooms Here" />} />
           </Route>
 
-          <Route path="/Contacts" element={<ContactPage/>}/>
+          
 
           <Route path="*" element={<NotFound />} />
         </Route>
