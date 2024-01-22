@@ -17,10 +17,16 @@ function Signup() {
     empNo: "",
     mobileNo: "",
     position: "",
+    unit: "", 
+    department: "", 
   });
+  
 
   const { data: units } = useFetch({ url: process.env.REACT_APP_FETCH_UNITS });
-const {data :departments } = useFetch({ url: process.env.REACT_APP_FETCH_DEPARTMENT });
+  const { data: departments } = useFetch({ url: process.env.REACT_APP_FETCH_DEPARTMENT });
+  
+  console.log("ertyuiytt",units, departments);
+  
 
 
 
@@ -60,8 +66,14 @@ console.log(units,departments);
   };
 
   const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    setCredentials((prevCredentials) => ({
+      ...prevCredentials,
+      [name]: value,
+    }));
   };
+  
 
   return (
     <div className="Homesignup">
@@ -155,16 +167,7 @@ console.log(units,departments);
                   onChange={handleChange}
                   name="department"
                 >
-                  <option value="">Select a Department</option>
-                  {departments &&
-                    departments.map((department) => (
-                      <option
-                        key={department.departmentID}
-                        value={department.departmentName}
-                      >
-                        {department.departmentName}
-                      </option>
-                    ))}
+                  
                 </select>
               </div>
             </div>

@@ -36,7 +36,7 @@ function App() {
           <Route path="signupPage" element={<Signup />} />
           <Route path="Contacts" element={<ContactPage/>}/>
           <Route index path="Dashboard" element={
-          <AdminRoute><Landing /></AdminRoute>
+          <Landing />
           } />
 
           <Route path="Users/*">
@@ -51,8 +51,8 @@ function App() {
           </Route>
 
           <Route path="Bookings/*">
-            <Route  element={<Table title="BookingsSomeRooms" />} />
-            <Route path="new-bookings" element={<Table inputs={BookInputs} title="BookingsSomeRooms" />} />
+            <Route  element={<Table title="Bookings Rooms" />} />
+            <Route path="new-bookings" element={<Table inputs={BookInputs} title="Booking Rooms" />} />
           </Route>
 
           <Route path="Rooms/*">

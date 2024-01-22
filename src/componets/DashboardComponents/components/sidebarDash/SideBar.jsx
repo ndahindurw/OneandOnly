@@ -34,10 +34,10 @@ function SideBar({onSignupClick}) {
         <ul>
           <p className="title">List</p>
           <li>
-        <a onClick={() => onSignupClick()}>
-            <FaCircleUser className="icon" />
-            <span className="Dashbord">Signup</span>
-        </a>
+          <a onClick={() => onSignupClick()}>
+                        <FaCircleUser className="icon" />
+                        <span className="Dashbord">Signup</span>
+                    </a>
     </li>
         </ul>
         <ul>

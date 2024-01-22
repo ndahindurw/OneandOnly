@@ -11,12 +11,11 @@ function Landing() {
     const [showSignup, setShowSignup] = useState(false);
 
     const handleSignupClick = () => {
-        setShowSignup(true);
+      setShowSignup(true);
     };
-
     return (
         <div className='Landing'>
-            <SideBar onSignupClick={handleSignupClick} />
+             <SideBar onSignupClick={handleSignupClick} showSignup={showSignup} />
             <div className="homeContent">
                 <div className="widgets">
                     <Widget type="User"/>

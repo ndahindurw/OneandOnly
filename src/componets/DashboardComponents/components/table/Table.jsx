@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import './Table.scss';
 import useFetch from '../../../../hooks/useFetch';
-import BookingEditPopup from './BookingEditPopup';
+import UserEditPopup from './UserEditPopup';
 import axiosInstance from '../../../../Axios/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Table({ title, data }) {
   const [url, setUrl] = useState('');
@@ -18,6 +19,8 @@ function Table({ title, data }) {
   const [successMessage, setSuccessMessage] = useState(null);
   const [page, setPage] = useState(1);
   const [allusers, setAllusers] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (allData) {
@@ -41,9 +44,11 @@ function Table({ title, data }) {
       case 'ListAllusers':
         setUrl(process.env.REACT_APP_FETCH_USER_DATA_URL);
         break;
-      case 'Available Some Rooms':
-        setUrl(process.env.REACT_APP_FETCH_ROOMS);
+      case 'Booking Rooms':
+        setUrl(process.env.REACT_APP_FETCH_EVENTS);
         break;
+      case 'Available Some Rooms':
+        setUrl(process.env.REACT_APP_FETCH_ROOMS)
       default:
         console.error('Invalid title:', title);
     }
@@ -73,9 +78,36 @@ function Table({ title, data }) {
     }
   };
 
-  const handleDelete = () => {
-    // Implement delete functionality if needed
+  const handleDelete = async (item) => {
+    try {
+      const url = item.staffID
+        ? `${process.env.REACT_APP_DELETE_USER}?staffID=${item.staffID}`
+        : item.roomID
+        ? `${process.env.REACT_APP_DELETE_ROOM}?roomID=${item.roomID}`
+        : '';
+  
+      if (!url) {
+        console.error('Invalid item for deletion:', item);
+        return;
+      }
+  
+      const response = await axiosInstance.delete(url);
+      console.log("deleting on ", url);
+  
+      if (response.status === 200) {
+        setError(null);
+        setUrl(item.staffID ? process.env.REACT_APP_FETCH_USER_DATA_URL : process.env.REACT_APP_FETCH_ROOMS);
+        setSuccessMessage(item.staffID ? 'User deleted successfully!' : 'Room deleted successfully!');
+      } else {
+        setError(item.staffID ? 'Failed to delete user.' : 'Failed to delete room.');
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      setError('Error deleting item.');
+    }
   };
+  
+  
 
   const handleSort = () => {
     const sortedData = [...allusers[page - 1]];
@@ -95,47 +127,60 @@ function Table({ title, data }) {
     if (!allusers[page - 1] || allusers[page - 1].length === 0) {
       return <p>No data available</p>;
     }
-
+  
     const columns = Object.keys(allusers[page - 1][0]);
     const filteredColumns = columns.filter((column) => column.toLowerCase() !== 'password');
-
+    const newData = filteredColumns.filter((booking) => booking.toLowerCase() !== 'bookings');
+  
+    console.log('colums data', columns);
+    console.log('filtered Data', filteredColumns);
+    console.log('new Data', newData);
+  
     return (
       <div className="table-container">
         <>
           <table className="table table-striped table-bordered">
             <thead className="thead-dark">
               <tr>
-                {filteredColumns.map((column) => (
+                {newData.map((column) => (
                   <th key={column}>{column}</th>
                 ))}
-                <th>
-                  Actions           
-                </th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {allusers[page - 1]
+                .filter((item) => !item.isDeleted) // Exclude deleted items
                 .filter((item) =>
                   userData.trim() === ''
                     ? true
                     : Object.values(item).some(
-                        (value) => typeof value === 'string' && value.toLowerCase().includes(userData.toLowerCase())
+                        (value) =>
+                          typeof value === 'string' && value.toLowerCase().includes(userData.toLowerCase())
                       )
                 )
                 .map((item, index) => (
                   <tr key={index}>
-                    {filteredColumns.map((column) => (
+                    {newData.map((column) => (
                       <td key={column}>
                         {column === 'room'
-                          ? item[column].roomLocation
+                          ? item[column]?.roomLocation
                           : column === 'user'
-                          ? item[column].fullnames
+                          ? item[column]?.fullnames
+                          : column === 'units' && item[column]
+                          ? item[column].unitName
+                          : column === 'departments' && item[column]
+                          ? item[column].departmentName
                           : typeof item[column] === 'object'
                           ? JSON.stringify(item[column])
                           : item[column]}
                       </td>
+                      
                     ))}
-
+                    {/* <td>
+                      {item.booking && item.booking.length > 0 ? 'Available' : 'Booked'}
+                    </td> */}
+                    
                     <td className="button-cell">
                       <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
                         <FontAwesomeIcon icon={faEdit} className="s-icons" />
@@ -144,29 +189,38 @@ function Table({ title, data }) {
                         <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
                       </button>
                     </td>
+                    
                   </tr>
                 ))}
             </tbody>
           </table>
-
+  
           <div className="pagination">
-            <button className="prev" onClick={() => setPage((prev) => prev - 1)} disabled={page === 1}>
+            <button
+              className="prev"
+              onClick={() => setPage((prev) => prev - 1)}
+              disabled={page === 1}
+            >
               Previous
             </button>
-            <button className="next" onClick={() => setPage((prev) => prev + 1)} disabled={page === allusers.length}>
+            <button
+              className="next"
+              onClick={() => setPage((prev) => prev + 1)}
+              disabled={page === allusers.length}
+            >
               Next
             </button>
           </div>
-          
         </>
       </div>
     );
   };
+  
 
   return (
-    <div className="table-container">
-      <h1 style={{display:"flex",alignItems:"center",justifyContent:"center",marginTop:"30px"}}>{title}</h1>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end",marginTop:"10px"}}>
+    <div className="card">
+      <h1 style={{display:"flex",alignItems:"center",justifyContent:"center",marginTop:"5px"}}>{title}</h1>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
         <button type="button" className='sort-btn' onClick={handleSort}>
           Sort by Date
         </button>
@@ -182,14 +236,15 @@ function Table({ title, data }) {
             onChange={(e) => setUserData(e.target.value)}
             placeholder="Type to search..."
             className="form-control form-control-sm mb-2"
-            style={{ width: '600px', marginLeft: '20px' }}
+            style={{ width: '800px', marginLeft: '20px', padding:10,borderRadius:20, marginTop:10}}
           />
           {renderTable()}
         </div>
       )}
 
       {editPopupVisible && (
-        <BookingEditPopup
+        <UserEditPopup
+          title={title}  
           bookingData={selectedItem}
           onClose={() => setEditPopupVisible(false)}
           onUpdate={handleEditPopupUpdate}
