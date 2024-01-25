@@ -27,9 +27,13 @@ const ExpandMore = styled((props) => {
     duration: theme.transitions.duration.shortest,
   }),
 }));
+const today = new Date();
 
 
-export default function RoomReviewCard({ roomData, bookedHours, inptform }) {
+export default function RoomReviewCard({roomData}) {
+
+
+  console.log('Received roomData:', roomData);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -37,9 +41,7 @@ export default function RoomReviewCard({ roomData, bookedHours, inptform }) {
   };
 
 
-  useEffect(() => {
  
-  }, [roomData]);
   return (
     <>
       {roomData.map((room, index) => (
@@ -90,22 +92,31 @@ export default function RoomReviewCard({ roomData, bookedHours, inptform }) {
               {room.bookings && room.bookings.length > 0 ? (
                 <div>
                   <Typography variant="body2" color="text.secondary">
-                    Bookings:
+                    Bookings for {today.toLocaleDateString()}:
                   </Typography>
                   <ul>
-                    {room.bookings.map((booking, bookingIndex) => (
-                      <li key={bookingIndex}>
-                        <Typography variant="body2" color="text.secondary">
-                          Start: {booking.startTime ? new Date(booking.startTime).toLocaleString() : 'N/A'}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          End: {booking.endTime ? new Date(booking.endTime).toLocaleString() : 'N/A'}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ color: booking.status ? 'blue' : 'green' }}>
-                          Status: {booking.status ? 'BOOKED' : 'READY TO BE BOOKED'}
-                        </Typography>
-                      </li>
-                    ))}
+                    {room.bookings
+                      .filter(
+                        (booking) =>
+                          new Date(booking.startTime).toLocaleDateString() === today.toLocaleDateString()
+                      )
+                      .map((booking, bookingIndex) => (
+                        <li key={bookingIndex}>
+                          <Typography variant="body2" color="text.secondary">
+                            Start: {new Date(booking.startTime).toLocaleTimeString()}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            End: {new Date(booking.endTime).toLocaleTimeString()}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ color: booking.status ? 'blue' : 'green' }}
+                          >
+                            Status: {booking.status ? 'BOOKED' : 'READY TO BE BOOKED'}
+                          </Typography>
+                        </li>
+                      ))}
                   </ul>
                 </div>
               ) : (
@@ -115,6 +126,7 @@ export default function RoomReviewCard({ roomData, bookedHours, inptform }) {
               )}
             </CardContent>
           </Collapse>
+
         </Card>
       ))}
     </>

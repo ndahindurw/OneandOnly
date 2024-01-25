@@ -17,9 +17,9 @@ function Navbar() {
                     </h1>
                     <nav>
                         <ul>
-                        <li><Link to="/" exact>Home</Link></li>
-                        <li><Link to="/ContactsPage" exact>Contacts</Link></li>
-                        <li><Link to="/Login" exact>Login</Link></li>                      
+                        <li><Link to="/" >Home</Link></li>
+                        <li><Link to="/ContactsPage" >Contacts</Link></li>
+                        <li><Link to="/Login" >Login</Link></li>                      
                         </ul>
                     </nav>
                 </div>

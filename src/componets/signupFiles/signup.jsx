@@ -161,7 +161,7 @@ console.log(units,departments);
                     ))}
                 </select>
               </div>
-              <div className="info-mode">
+              {/* <div className="info-mode">
                 <select
                   id="selectBox"
                   onChange={handleChange}
@@ -169,7 +169,7 @@ console.log(units,departments);
                 >
                   
                 </select>
-              </div>
+              </div> */}
             </div>
             <div className="user-inp">
               <input

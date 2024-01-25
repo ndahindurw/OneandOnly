@@ -36,30 +36,41 @@ function App() {
           <Route path="signupPage" element={<Signup />} />
           <Route path="Contacts" element={<ContactPage/>}/>
           <Route index path="Dashboard" element={
-          <Landing />
+            <AdminRoute><Landing /></AdminRoute>
+          
           } />
 
           <Route path="Users/*">
             <Route  element={
-              
-            <Landing />
+              <AdminRoute><Landing /></AdminRoute>
+            
             } />
-            <Route path="ListAllusers"  element={<Table title="ListAllusers" />} />
+            <Route path="ListAllusers"  element={
+            <AdminRoute><Table title="ListAllusers" /></AdminRoute>
+            } />
             <Route path=":userId" element={<Setting />} />
-            <Route path="new-user" element={<Signup inputs={UserInputs} title="Add New user" />} />
+            <Route path="new-user" element={
+              <AdminRoute><Signup inputs={UserInputs} title="Add New user" /></AdminRoute>
+            
+            } />
            
           </Route>
 
           <Route path="Bookings/*">
-            <Route  element={<Table title="Bookings Rooms" />} />
+            <Route  element={
+            <AdminRoute><Table title="Bookings Rooms" /></AdminRoute>} />
             <Route path="new-bookings" element={<Table inputs={BookInputs} title="Booking Rooms" />} />
           </Route>
 
           <Route path="Rooms/*">
-            <Route path="List-Availble-Rooms" element={<Table title="Available Some Rooms" />} />
-            <Route path="List-Booked-Rooms" element={<Table title="Booked  Rooms" />} />
+            <Route path="List-Availble-Rooms" element={<AdminRoute><Table title="Available Some Rooms" /></AdminRoute>} />
+            <Route path="List-Booked-Rooms" element={
+            <AdminRoute><Table title="Booked  Rooms" /></AdminRoute>
+            } />
 
-            <Route path="new-rooms" element={<New inputs={RoomInputs} title="Add Some Rooms Here" />} />
+            <Route path="new-rooms" element={
+            <AdminRoute><New inputs={RoomInputs} title="Add Some Rooms Here" /></AdminRoute>
+            } />
           </Route>
 
          

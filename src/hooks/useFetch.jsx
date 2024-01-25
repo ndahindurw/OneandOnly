@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState,useEffect } from 'react';
 import axiosInstance from '../Axios/axios';
+import authService from '../componets/Services/authService';
 
 function useFetch({url}) {
     const [error, setError] = useState(null);
@@ -16,6 +17,7 @@ function useFetch({url}) {
             
             if (response && response.data) {
               setData(response.data);
+              authService.setToken(`${process.env.REACT_APP_TOKEN}`)
 
             } else {
               console.error("Invalid response structure:", response);

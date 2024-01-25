@@ -7,8 +7,10 @@ import UserEditPopup from './UserEditPopup';
 import axiosInstance from '../../../../Axios/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
+import authService from '../../../Services/authService';
+import { jwtDecode as jwt_decode } from 'jwt-decode';
 
-function Table({ title, data }) {
+function Table({ title, data,tokenPayLoad }) {
   const [url, setUrl] = useState('');
   const { loading: fetchLoading, data: allData } = useFetch({ url });
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,9 @@ function Table({ title, data }) {
   const [successMessage, setSuccessMessage] = useState(null);
   const [page, setPage] = useState(1);
   const [allusers, setAllusers] = useState([]);
+  const [storedToken, setStoredToken] = useState(null);
+  
+  
 
   const navigate = useNavigate();
 
@@ -40,6 +45,9 @@ function Table({ title, data }) {
   };
 
   useEffect(() => {
+    const token = authService.getToken();
+    setStoredToken(token); 
+
     switch (title) {
       case 'ListAllusers':
         setUrl(process.env.REACT_APP_FETCH_USER_DATA_URL);
@@ -48,11 +56,37 @@ function Table({ title, data }) {
         setUrl(process.env.REACT_APP_FETCH_EVENTS);
         break;
       case 'Available Some Rooms':
-        setUrl(process.env.REACT_APP_FETCH_ROOMS)
+        setUrl(process.env.REACT_APP_FETCH_ROOMS);
+        break;
       default:
         console.error('Invalid title:', title);
     }
   }, [title]);
+  
+  const HandleReturn = () => {
+    try {
+
+      const  storedToken =  authService.getToken()
+
+      if (!storedToken) {
+        console.error('Token is null or undefined');
+        return; 
+      }
+
+      
+
+      const payLoad = jwt_decode(storedToken);
+
+      if (payLoad) {
+        payLoad?.authorities === 'admin' ? navigate('/Dashboard') : navigate('/RequestRom');
+      } else {
+        console.error('Token is null');
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  };
+   
 
   const handleEdit = (item) => {
     setSelectedItem(item);
@@ -92,11 +126,18 @@ function Table({ title, data }) {
       }
   
       const response = await axiosInstance.delete(url);
-      console.log("deleting on ", url);
+      console.log("deleting on ", response);
   
       if (response.status === 200) {
         setError(null);
-        setUrl(item.staffID ? process.env.REACT_APP_FETCH_USER_DATA_URL : process.env.REACT_APP_FETCH_ROOMS);
+  
+        setAllusers((prevAllUsers) => {
+          const updatedAllUsers = prevAllUsers.map((chunk) =>
+            chunk.filter((user) => user.staffID !== item.staffID)
+          );
+          return updatedAllUsers;
+        });
+  
         setSuccessMessage(item.staffID ? 'User deleted successfully!' : 'Room deleted successfully!');
       } else {
         setError(item.staffID ? 'Failed to delete user.' : 'Failed to delete room.');
@@ -106,6 +147,7 @@ function Table({ title, data }) {
       setError('Error deleting item.');
     }
   };
+  
   
   
 
@@ -150,7 +192,7 @@ function Table({ title, data }) {
             </thead>
             <tbody>
               {allusers[page - 1]
-                .filter((item) => !item.isDeleted) // Exclude deleted items
+                .filter((item) => !item.isDeleted) 
                 .filter((item) =>
                   userData.trim() === ''
                     ? true
@@ -223,6 +265,9 @@ function Table({ title, data }) {
       <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
         <button type="button" className='sort-btn' onClick={handleSort}>
           Sort by Date
+        </button>
+        <button type="button" className='sort-btn' onClick={HandleReturn}>
+         Return  Home
         </button>
       </div>
       {fetchLoading ? (

@@ -68,10 +68,10 @@ body.active-model {
   padding: 5px 7px;
 }
 .table-container {
-  width: 99%;
-  margin-top: -10px;
+  width: 100%;
+  margin: 10px;
   overflow-x: auto;
-  min-height: 500px; /* Table.scss */
+  
 
 
   
@@ -83,13 +83,14 @@ body.active-model {
   
   .table th,
   .table td {
-    padding: 8px;
+    padding: 2px;
     text-align: left;
   }
   
   .table th {
     background-color: #002E33; 
     color: #fff; 
+    padding: 2px;
   }
   
   .table-striped tbody tr:nth-of-type(odd) {
@@ -97,7 +98,7 @@ body.active-model {
   }
   
   .button-cell button {
-    margin-right: 5px; /* Adjust spacing between action buttons */
+    margin-right: 5px; 
   }
   
   .pagination {

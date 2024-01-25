@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import authService from '../Services/authService';
 import Navbar from '../navigationBar/navbar';
 import { jwtDecode as jwt_decode } from 'jwt-decode';
+import { Table } from '@mui/material';
+
+const AuthContext = createContext();
 
 const Signin = () => {
   const [credentials, setCredentials] = useState({
@@ -11,24 +14,27 @@ const Signin = () => {
     password: '',
   });
 
+  const [tokenPayLoad, setTokenPayLoad] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await authService.login(credentials);
       console.log(response?.data);
-  
+
       if (response?.data.accessToken) {
         const accessToken = response?.data?.accessToken;
         const setTokenResult = authService.setToken(accessToken);
         console.log('setted Token ', setTokenResult);
-  
+
         const payLoad = jwt_decode(accessToken);
+        setTokenPayLoad(payLoad);
         payLoad?.authorities === 'admin' ? navigate('/Dashboard') : navigate('/RequestRom');
       }
-  
+
       setError(null);
     } catch (err) {
       console.error('Error during login:', err);
@@ -37,7 +43,6 @@ const Signin = () => {
       console.log(err);
     }
   };
-  
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -72,13 +77,15 @@ const Signin = () => {
             Login
           </button>
           <div className="signup-link">
-          {/* <Link to="/signupPage" className="account-link">
-            Don't have an account? Sign up here.
-          </Link> */}
-        </div>
+          </div>
         </form>
-        
       </div>
+      
+      {tokenPayLoad && (
+        <div>
+          <Table tokenPayLoad={setTokenPayLoad} />
+        </div>
+      )}
     </div>
   );
 };
