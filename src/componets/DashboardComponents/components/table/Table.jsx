@@ -114,11 +114,15 @@ function Table({ title, data,tokenPayLoad }) {
 
   const handleDelete = async (item) => {
     try {
-      const url = item.staffID
-        ? `${process.env.REACT_APP_DELETE_USER}?staffID=${item.staffID}`
-        : item.roomID
-        ? `${process.env.REACT_APP_DELETE_ROOM}?roomID=${item.roomID}`
-        : '';
+      let url = '';
+  
+      if (item.staffID) {
+        url = `${process.env.REACT_APP_DELETE_USER}?staffID=${item.staffID}`;
+      } else if (item.roomID) {
+        url = `${process.env.REACT_APP_DELETE_ROOM}?roomID=${item.roomID}`;
+      } else if (item.bookingID) {
+        url = `${process.env.REACT_APP_CANCEL_BOOKING}?bookingID=${item.bookingID}`;
+      }
   
       if (!url) {
         console.error('Invalid item for deletion:', item);
@@ -126,7 +130,6 @@ function Table({ title, data,tokenPayLoad }) {
       }
   
       const response = await axiosInstance.delete(url);
-      console.log("deleting on ", response);
   
       if (response.status === 200) {
         setError(null);
@@ -138,15 +141,20 @@ function Table({ title, data,tokenPayLoad }) {
           return updatedAllUsers;
         });
   
-        setSuccessMessage(item.staffID ? 'User deleted successfully!' : 'Room deleted successfully!');
+        setSuccessMessage(
+          item.staffID ? 'User deleted successfully!' : item.roomID ? 'Room deleted successfully!' : 'Booking canceled successfully!'
+        );
       } else {
-        setError(item.staffID ? 'Failed to delete user.' : 'Failed to delete room.');
+        setError(
+          item.staffID ? 'Failed to delete user.' : item.roomID ? 'Failed to delete room.' : 'Failed to cancel booking.'
+        );
       }
     } catch (error) {
       console.error('Error deleting item:', error);
       setError('Error deleting item.');
     }
   };
+  
   
   
   
