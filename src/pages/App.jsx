@@ -23,7 +23,8 @@ import Setting from "../componets/DashboardComponents/single/settings";
 import Table from "../componets/DashboardComponents/components/table/Table";
 import { ContactPage } from "@mui/icons-material";
 import ContactP from "../componets/signupFiles/ContactP";
-// ... (your imports)
+import AddRoomName from "../componets/DashboardComponents/new/AddRoomName";
+
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
           <Route path="signupPage" element={<Signup />} />
           <Route path="Contacts" element={<ContactPage/>}/>
           <Route index path="Dashboard" element={
-            <AdminRoute><Landing /></AdminRoute>
+            <AdminRoute><Landing/></AdminRoute>
           
           } />
 
@@ -69,8 +70,16 @@ function App() {
             } />
 
             <Route path="new-rooms" element={
-            <AdminRoute><New inputs={RoomInputs} title="Add Some Rooms Here" /></AdminRoute>
+            <New inputs={RoomInputs} title="Add Some Rooms Here" />
+          
+            
             } />
+            <Route path="addNewRoom" element={
+            <AddRoomName inputs={RoomInputs} title="Add room Name" />
+          
+            
+            } />
+            {/* <New path="AddName-toRoomm" title="new Room Name"/> */}
           </Route>
 
          

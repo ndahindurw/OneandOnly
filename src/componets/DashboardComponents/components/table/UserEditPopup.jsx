@@ -1,209 +1,257 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useFetch from '../../../../hooks/useFetch';
+import axios from 'axios';
 
-const BookingEditPopup = ({ title, bookingData, onClose, onUpdate, handleSubmit, units, departments, image0, successMessage, error }) => {
-  const [editedBookingData, setEditedBookingData] = useState({ ...bookingData });
+const BookingEditPopup = ({ title}) => {
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [credentials, setCredentials] = useState({
+    fullnames: "",
+    email: "",
+    password: "",
+    empNo: "",
+    mobileNo: "",
+    position: "",
+    unit: "",
+    department: "",
+  });
 
-  const handleChange = (field, value) => {
-    setEditedBookingData((prevData) => ({
-      ...prevData,
-      [field]: value,
+  const { data: units } = useFetch({
+    url: process.env.REACT_APP_FETCH_UNITS,
+  });
+  const { data: departments } = useFetch({
+    url: process.env.REACT_APP_FETCH_DEPARTMENT,
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_SIGNUP}`,
+        credentials,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setError(null);
+        setSuccessMessage("Account successfully created!");
+        console.log("successfully saved");
+        console.log(response.data, response.status);
+      } else {
+        if (response.data && response.data.msg) {
+          setError(response.data.msg);
+        } else {
+          throw new Error("Could not Post Data", error);
+        }
+      }
+    } catch (err) {
+      console.error("Error during signup:", err);
+      setError(err.message);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setCredentials((prevCredentials) => ({
+      ...prevCredentials,
+      [name]: value,
     }));
   };
 
-  const handleUpdate = () => {
-    onUpdate(editedBookingData);
-    onClose();
-  };
+ const  handleUpdate=()=>{
 
-  console.log("Myy data ", bookingData)
-  const renderUserForm = () => {
-    return (
-      <div className="Homesignup">
-        <div className="left-container">
-          <img className="rra-image" src={image0} alt="Logo" />
-          <h1 className="head-text">
-            <span className="first">Rwanda</span>
-            <span className="second"> Revenue</span>{" "}
-            <span className="tertiary">Authority</span>
-          </h1>
-          <div className="return">
-            <ul>
-              <Link to="/Dashboard">Return to Dashboard</Link>
-            </ul>
-          </div>
-        </div>
-        <div className="right-container">
-          <div className="right">
-            <form action="" className="user-form" onSubmit={handleSubmit}>
-              <h2>Create Account</h2>
-              <div className="user-inp">
+ }
+ 
+  const renderUserForm=()=>{
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <form
+            action=""
+            className="user-form p-3 border"
+            onSubmit={handleSubmit}
+          >
+            <h2 className="text-center mb-4">Create Account</h2>
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <label htmlFor="fullnames" className="form-label">
+                  Full Names
+                </label>
                 <input
                   type="text"
                   placeholder="Enter Full Names"
                   name="fullnames"
-                  value={bookingData.fullnames}
+                  value={credentials.fullnames}
                   required
-                  className="input"
-                  onChange={(e) => handleChange('fullnames', e.target.value)}
+                  className="form-control"
+                  onChange={handleChange}
                 />
               </div>
-              <div className="user-inp">
+              <div className="col-md-6">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
                 <input
                   type="email"
                   placeholder="Your Email"
                   name="email"
-                  value={bookingData.email}
+                  value={credentials.email}
                   required
-                  className="input"
-                  onChange={(e) => handleChange('email', e.target.value)}
+                  className="form-control"
+                  onChange={handleChange}
                 />
               </div>
-              <div className="user-inp">
+            </div>
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <label htmlFor="position" className="form-label">
+                  Position
+                </label>
                 <input
                   type="text"
                   placeholder="Enter Position"
                   name="position"
-                  value={bookingData.position}
+                  value={credentials.position}
                   required
-                  className="input"
-                  onChange={(e) => handleChange('position', e.target.value)}
+                  className="form-control"
+                  onChange={handleChange}
                 />
               </div>
-              <div className="user-inp">
+              <div className="col-md-6">
+                <label htmlFor="empNo" className="form-label">
+                  Employee Number
+                </label>
                 <input
                   type="text"
                   placeholder="Enter Employee Number"
                   name="empNo"
-                  value={bookingData.empNo}
+                  value={credentials.empNo}
                   required
-                  className="input"
-                  onChange={(e) => handleChange('empNo', e.target.value)}
+                  className="form-control"
+                  onChange={handleChange}
                 />
               </div>
-              <div className="user-inp">
+            </div>
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <label htmlFor="mobileNo" className="form-label">
+                  Mobile Number
+                </label>
                 <input
                   type="text"
                   placeholder="Enter Your Mobile Number"
                   name="mobileNo"
-                  value={bookingData.mobileNo}
+                  value={credentials.mobileNo}
                   required
-                  className="input"
-                  onChange={(e) => handleChange('mobileNo', e.target.value)}
+                  className="form-control"
+                  onChange={handleChange}
                 />
               </div>
-              <div className="user-inp">
-                <div className="info-mode">
-                  <select id="selectBox" onChange={(e) => handleChange('unit', e.target.value)} name="unit">
-                    <option value="">Select a Unit</option>
-                    {units &&
-                      units.map((unit) => (
-                        <option key={unit.unitID} value={unit.unitName}>
-                          {unit.unitName}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="info-mode">
-                  <select
-                    id="selectBox"
-                    onChange={(e) => handleChange('department', e.target.value)}
-                    name="department"
-                  >
-                    <option value="">Select a Department</option>
-                    {departments &&
-                      departments.map((department) => (
-                        <option
-                          key={department.departmentID}
-                          value={department.departmentName}
-                        >
-                          {department.departmentName}
-                        </option>
-                      ))}
-                  </select>
-                </div>
+              <div className="col-md-6">
+                <label htmlFor="unitID" className="form-label">
+                  Unit
+                </label>
+                <select
+  id="selectBox"
+  onChange={handleChange}
+  name="unitID" 
+  value={credentials.unitID}
+  className="form-select"
+>
+  <option value="">Select a Unit</option>
+  {units &&
+    units.map((unit) => (
+      <option key={unit.unitID} value={unit.unitID}>
+        {unit.unitName}
+      </option>
+    ))}
+</select>
+
               </div>
-              <div className="user-inp">
-                <input
-                  type="password"
-                  placeholder="Enter Password"
-                  name="password"
-                  value={bookingData.password}
-                  required
-                  className="input"
-                  onChange={(e) => handleChange('password', e.target.value)}
-                />
-              </div>
-              {successMessage && <div className="success-message">{successMessage}</div>}
-              {error && <div className="error-message">{error}</div>}
-              <button type="submit" className="green-btn">
-                Register
-              </button>
-            </form>
-          </div>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter Password"
+                name="password"
+                value={credentials.password}
+                required
+                className="form-control"
+                onChange={handleChange}
+              />
+            </div>
+            {successMessage && (
+              <div className="alert alert-success">{successMessage}</div>
+            )}
+            {error && <div className="alert alert-danger">{error}</div>}
+            <button type="submit" className="green-btn btn-success ">
+              Register
+            </button>
+          </form>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+}
 
   const renderBookingForm = () => {
     return (
-      <div className="popup-container">
+      <div className="popup">
         <label>Booking ID:</label>
         <input
           type="text"
-          value={editedBookingData.room.bookingID}
-          onChange={(e) => handleChange('room', { ...editedBookingData.room, bookingID: e.target.value })}
+          value={credentials.room.bookingID}
+          onChange={(e) => handleChange('room', { ...credentials.room, bookingID: e.target.value })}
         />
         <label>Room ID:</label>
         <input
           type="text"
-          value={editedBookingData.room.roomID}
-          onChange={(e) => handleChange('room', { ...editedBookingData.room, roomID: e.target.value })}
+          value={credentials.room.roomID}
+          onChange={(e) => handleChange('room', { ...credentials.room, roomID: e.target.value })}
         />
         <label>User Staff ID:</label>
         <input
           type="text"
-          value={editedBookingData.user.staffID}
-          onChange={(e) => handleChange('user', { ...editedBookingData.user, staffID: e.target.value })}
+          value={credentials.user.staffID}
+          onChange={(e) => handleChange('user', { ...credentials.user, staffID: e.target.value })}
         />
         <label>Start Time:</label>
         <input
           type="datetime-local"
-          value={editedBookingData.startTime}
+          value={credentials.startTime}
           onChange={(e) => handleChange('startTime', e.target.value)}
         />
         <label>End Time:</label>
         <input
           type="datetime-local"
-          value={editedBookingData.endTime}
+          value={credentials.endTime}
           onChange={(e) => handleChange('endTime', e.target.value)}
         />
         <label>Purpose:</label>
         <input
           type="text"
-          value={editedBookingData.purpose}
+          value={credentials.purpose}
           onChange={(e) => handleChange('purpose', e.target.value)}
         />
         <button onClick={handleUpdate}>Update</button>
-        <button onClick={onClose}>Cancel</button>
+        
       </div>
     );
   };
-
-  switch (title) {
-    case 'ListAllusers':
-      return renderUserForm();
-
-    case 'BookingSomeRooms':
-      return renderBookingForm();
-
-    // Add more cases as needed for different forms based on the title prop
-
-    default:
-      console.error('Invalid title:', title);
-      return null;
-  }
+  
+  return (title == 'ListAllusers') ? <renderUserForm /> : <renderBookingForm />;
 };
 
 export default BookingEditPopup;

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./signup.scss";
-import Navbar from "../navigationBar/navbar";
-import image0 from "../../assets/RRAImage.jpg";
-import { Link } from "react-router-dom";
-import axiosInstance from "../../Axios/axios";
 import useFetch from "../../hooks/useFetch";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function Signup() {
   const [error, setError] = useState(null);
@@ -17,20 +15,13 @@ function Signup() {
     empNo: "",
     mobileNo: "",
     position: "",
-    unit: "", 
-    department: "", 
+    unitID: "" ,
+    department: "",
   });
-  
 
-  const { data: units } = useFetch({ url: process.env.REACT_APP_FETCH_UNITS });
-  const { data: departments } = useFetch({ url: process.env.REACT_APP_FETCH_DEPARTMENT });
-  
-  console.log("ertyuiytt",units, departments);
-  
-
-
-
-console.log(units,departments);
+  const { data: units } = useFetch({
+    url: process.env.REACT_APP_FETCH_UNITS,
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,18 +41,32 @@ console.log(units,departments);
       if (response.status === 200) {
         setError(null);
         setSuccessMessage("Account successfully created!");
-        console.log("succesfully saved");
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 4000);
+
+        console.log("successfully saved");
         console.log(response.data, response.status);
       } else {
         if (response.data && response.data.msg) {
           setError(response.data.msg);
+
+          // Clear error message after 3000 milliseconds (3 seconds)
+          setTimeout(() => {
+            setError(null);
+          }, 4000);
         } else {
           throw new Error("Could not Post Data", error);
         }
-      } 
+      }
     } catch (err) {
       console.error("Error during signup:", err);
       setError(err.message);
+
+
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
     }
   };
 
@@ -70,124 +75,142 @@ console.log(units,departments);
   
     setCredentials((prevCredentials) => ({
       ...prevCredentials,
-      [name]: value,
+      [name]: name === "unitID" ? parseInt(value, 10) : value,
     }));
   };
   
-
+  
+  
+  
+  
   return (
-    <div className="Homesignup">
-      <div className="left-container">
-        <img className="rra-image" src={image0} alt="Logo" />
-        <h1 className="head-text">
-          <span className="first">Rwanda</span>
-          <span className="second"> Revenue</span>{" "}
-          <span className="teritiary">Authority</span>
-        </h1>
-        <div className="return">
-          <ul>
-            <Link to="/Dashboard">Return to Dashboard</Link>
-          </ul>
-        </div>
-      </div>
-      <div className="right-container">
-        <div className="right">
-          <form action="" className="user-form" onSubmit={handleSubmit}>
-            <h2>Create Account</h2>
-            <div className="user-inp">
-              <input
-                type="text"
-                placeholder="Enter Full Names"
-                name="fullnames"
-                value={credentials.fullnames}
-                required
-                className="input"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="user-inp">
-              <input
-                type="email"
-                placeholder="Your Email"
-                name="email"
-                value={credentials.email}
-                required
-                className="input"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="user-inp">
-              <input
-                type="text"
-                placeholder="Enter Position"
-                name="position"
-                value={credentials.position}
-                required
-                className="input"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="user-inp">
-              <input
-                type="text"
-                placeholder="Enter Employee Number"
-                name="empNo"
-                value={credentials.empNo}
-                required
-                className="input"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="user-inp">
-              <input
-                type="text"
-                placeholder="Enter Your Mobile Number"
-                name="mobileNo"
-                value={credentials.mobileNo}
-                required
-                className="input"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="user-inp">
-              <div className="info-mode">
-                <select id="selectBox" onChange={handleChange} name="unit">
-                  <option value="">Select a Unit</option>
-                  {units &&
-                    units.map((unit) => (
-                      <option key={unit.unitID} value={unit.unitName}>
-                        {unit.unitName}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {/* <div className="info-mode">
-                <select
-                  id="selectBox"
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <form
+            action=""
+            className="user-form p-3 border"
+            onSubmit={handleSubmit}
+          >
+            <h2 className="text-center mb-4">Create Account</h2>
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <label htmlFor="fullnames" className="form-label">
+                  Full Names
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Full Names"
+                  name="fullnames"
+                  value={credentials.fullnames}
+                  required
+                  className="form-control"
                   onChange={handleChange}
-                  name="department"
-                >
-                  
-                </select>
-              </div> */}
+                />
+              </div>
+              <div className="col-md-6">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  name="email"
+                  value={credentials.email}
+                  required
+                  className="form-control"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div className="user-inp">
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <label htmlFor="position" className="form-label">
+                  Position
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Position"
+                  name="position"
+                  value={credentials.position}
+                  required
+                  className="form-control"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6">
+                <label htmlFor="empNo" className="form-label">
+                  Employee Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Employee Number"
+                  name="empNo"
+                  value={credentials.empNo}
+                  required
+                  className="form-control"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <label htmlFor="mobileNo" className="form-label">
+                  Mobile Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter Your Mobile Number"
+                  name="mobileNo"
+                  value={credentials.mobileNo}
+                  required
+                  className="form-control"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="col-md-6">
+                <label htmlFor="unitID" className="form-label">
+                  Unit
+                </label>
+                <select
+  id="selectBox"
+  onChange={handleChange}
+  name="unitID" 
+  value={credentials.unitID}
+  className="form-select"
+>
+  <option value="">Select a Unit</option>
+  {units &&
+    units.map((unit) => (
+      <option key={unit.unitID} value={unit.unitID}>
+        {unit.unitName}
+      </option>
+    ))}
+</select>
+
+              </div>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
               <input
                 type="password"
                 placeholder="Enter Password"
                 name="password"
                 value={credentials.password}
                 required
-                className="input"
+                className="form-control"
                 onChange={handleChange}
               />
             </div>
-            {successMessage && <div className="success-message">{successMessage}</div>}
-            {error && <div className="error-message">{error}</div>}
-            <button type="submit" className="green-btn">
+            {successMessage && (
+              <div className="alert alert-success">{successMessage}</div>
+            )}
+            {error && <div className="alert alert-danger">{error}</div>}
+            <button type="submit" className="green-btn btn-success ">
               Register
             </button>
-            
           </form>
         </div>
       </div>

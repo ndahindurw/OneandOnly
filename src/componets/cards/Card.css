@@ -1,4 +1,11 @@
-/* Card.css */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&family=Poppins:wght@100;200;300&family=Raleway:ital,wght@0,200;1,200&display=swap');
+.poppins-extralight {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
 
 .cardContainer {
   border: 1px solid #ddd;
@@ -32,6 +39,7 @@
   margin: 10px 0;
 }
 
+
 .error-message {
   color: red;
   margin: 10px 0;
@@ -42,7 +50,7 @@
 }
 
 label {
-  font-weight: bold;
+  font-weight: 300;
 }
 
 select,
@@ -67,11 +75,30 @@ button {
   margin: 20px;
 }
 
+
+.room-review-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px; 
+  margin: 30px;
+}
 button:hover {
   background-color: #a3dc2f;
 }
 
-/* ... (your existing styles) */
+
+
+
+.collapsedCard {
+  height: 100px; 
+  overflow: hidden;
+}
+
+.expandedCard {
+  height: auto; 
+}
+
+
 
 
 .modal {
@@ -113,7 +140,7 @@ button:hover {
   width: 100%;
 }
 
-/* Styles for FullCalendar header */
+
 .custom-calendar .fc-toolbar {
   background-color: #3498db;
   color: #fff;
@@ -121,7 +148,7 @@ button:hover {
   margin-bottom: 10px;
 }
 
-/* Styles for FullCalendar buttons */
+
 .custom-calendar .fc-button {
   background-color: #2980b9;
   color: #fff;
@@ -129,38 +156,33 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Styles for FullCalendar event dots */
 .custom-calendar .fc-event-dot {
   background-color: #e74c3c;
 }
 
-/* Styles for FullCalendar event title */
+
 .custom-calendar .fc-event-title {
   color: #333;
 }
 
-/* Styles for FullCalendar day cells */
 .custom-calendar .fc-day {
   padding: 10px;
 }
 
-/* Styles for FullCalendar selected day */
 .custom-calendar .fc-day-selected {
   background-color: #3498db;
   color: #fff;
 }
 
-/* Styles for FullCalendar today's day */
 .custom-calendar .fc-day-today {
   background-color: #f5f5f5;
 }
 
-/* Styles for FullCalendar event container */
 .custom-calendar .fc-event-container {
   margin-bottom: 10px;
 }
 
-/* Styles for FullCalendar event */
+
 .custom-calendar .fc-event {
   background-color: #3498db;
   color: #fff;
@@ -178,7 +200,6 @@ button:hover {
   font-size: medium;
 }
 
-/* Styles for FullCalendar event when dragged */
 .custom-calendar .fc-event-dragging {
   opacity: 0.5;
 }
@@ -226,26 +247,27 @@ button:hover {
   text-decoration: none;
 }
 
-/* Add styles for FullCalendar */
 .custom-full-calendar {
   width: 100%;
-  height: 600px; /* Adjust the height as needed */
+  height: 600px; 
   margin-top: 20px;
 }
 
-/* Style for day content */
+
 .custom-day-content {
-  font-size: 16px; /* Adjust the font size as needed */
+  font-size: 16px;
   padding: 5px;
   text-align: center;
   text-decoration: none;
 }
 
-/* Style for popover content */
 .popoverStyle {
   max-width: 300px;
   padding: 10px;
   text-decoration: none;
 }
-
+.canceled-event {
+  background-color: red;
+  color: white; 
+}
 

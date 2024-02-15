@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faPrint } from '@fortawesome/free-solid-svg-icons'; 
+import { CSVLink } from 'react-csv';
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import './Table.scss';
 import useFetch from '../../../../hooks/useFetch';
 import UserEditPopup from './UserEditPopup';
@@ -9,8 +11,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../../../Services/authService';
 import { jwtDecode as jwt_decode } from 'jwt-decode';
+import { Dialog, DialogContent } from '@mui/material';
+import Card from '../../../cards/Card';
+import CardForm from '../../../cards/CardForm';
 
-function Table({ title, data,tokenPayLoad }) {
+function Table({ title, data }) {
   const [url, setUrl] = useState('');
   const { loading: fetchLoading, data: allData } = useFetch({ url });
   const [loading, setLoading] = useState(false);
@@ -22,7 +27,10 @@ function Table({ title, data,tokenPayLoad }) {
   const [page, setPage] = useState(1);
   const [allusers, setAllusers] = useState([]);
   const [storedToken, setStoredToken] = useState(null);
-  
+  const [credentials,setCredentials]=useState({
+    bookingID:"",
+    purpose:"",
+  })
   
 
   const navigate = useNavigate();
@@ -33,6 +41,8 @@ function Table({ title, data,tokenPayLoad }) {
       setAllusers(chunks);
     }
   }, [allData]);
+
+  console.log("dataaaaaaa",allData)
 
   const HandleList = (array) => {
     const list = [];
@@ -111,6 +121,15 @@ function Table({ title, data,tokenPayLoad }) {
       setError('Error updating booking.');
     }
   };
+  const scrollToBookingForm = () => {
+    document.getElementById('formz').scrollIntoView();
+  };
+  const handleFormLoad = () => {
+    setEditPopupVisible(!editPopupVisible);
+    if (!editPopupVisible) {
+      scrollToBookingForm();
+    }
+  };
 
   const handleDelete = async (item) => {
     try {
@@ -141,13 +160,17 @@ function Table({ title, data,tokenPayLoad }) {
           return updatedAllUsers;
         });
   
-        setSuccessMessage(
-          item.staffID ? 'User deleted successfully!' : item.roomID ? 'Room deleted successfully!' : 'Booking canceled successfully!'
-        );
+        setTimeout(() => {
+          setSuccessMessage(
+            item.staffID ? 'User deleted successfully!' : item.roomID ? 'Room deleted successfully!' : 'Booking canceled successfully!'
+          );
+        }, 4000);
       } else {
-        setError(
-          item.staffID ? 'Failed to delete user.' : item.roomID ? 'Failed to delete room.' : 'Failed to cancel booking.'
-        );
+        setTimeout(() => {
+          setError(
+            item.staffID ? 'Failed to delete user.' : item.roomID ? 'Failed to delete room.' : 'Failed to cancel booking.'
+          );
+        }, 4000);
       }
     } catch (error) {
       console.error('Error deleting item:', error);
@@ -155,10 +178,45 @@ function Table({ title, data,tokenPayLoad }) {
     }
   };
   
-  
-  
-  
 
+  const  HandleChanges = (e)=>{
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  }
+
+  const HandleSumitionForm = async (e) => {
+    e.preventDefault(); 
+    console.log("Form submitted");
+    console.log("Credentials:", credentials);
+    console.log("Request config:", { data: credentials });
+    
+    try {
+      const response = await axiosInstance.delete(
+        process.env.REACT_APP_CANCEL_BOOKING,
+        {data: credentials}
+      );
+      
+      console.log("Response:", response);
+      
+      if (response.status === 200) {
+        setTimeout(() => {
+          setSuccessMessage(response.data.msg); 
+          window.location.reload();
+        }, 4000);
+        setError(null);
+      } else {
+        setTimeout(() => {
+          setError("Failed to cancel booking.");
+        }, 4000);
+      }
+    } catch (error) {
+      console.error("Error canceling booking:", error);
+      setTimeout(() => {
+        setError(error.message);
+      }, 4000);
+    }
+  }
+  
+  
   const handleSort = () => {
     const sortedData = [...allusers[page - 1]];
     sortedData.sort((a, b) => {
@@ -187,9 +245,9 @@ function Table({ title, data,tokenPayLoad }) {
     console.log('new Data', newData);
   
     return (
-      <div className="table-container">
+      <div className="table-container" id="formz">
         <>
-          <table className="table table-striped table-bordered">
+          <table id="excelTable" className="table table-striped table-bordered">
             <thead className="thead-dark">
               <tr>
                 {newData.map((column) => (
@@ -227,9 +285,6 @@ function Table({ title, data,tokenPayLoad }) {
                       </td>
                       
                     ))}
-                    {/* <td>
-                      {item.booking && item.booking.length > 0 ? 'Available' : 'Booked'}
-                    </td> */}
                     
                     <td className="button-cell">
                       <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
@@ -256,7 +311,8 @@ function Table({ title, data,tokenPayLoad }) {
             <button
               className="next"
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={page === allusers.length}
+              disabled={page === 
+                allusers.length}
             >
               Next
             </button>
@@ -265,7 +321,10 @@ function Table({ title, data,tokenPayLoad }) {
       </div>
     );
   };
-  
+
+  const printList = () => {
+    window.print();
+  };
 
   return (
     <div className="card">
@@ -275,8 +334,24 @@ function Table({ title, data,tokenPayLoad }) {
           Sort by Date
         </button>
         <button type="button" className='sort-btn' onClick={HandleReturn}>
-         Return  Home
+          Return  Home
         </button>
+        <button type="button" className='sort-btn' onClick={printList}> 
+          <FontAwesomeIcon icon={faPrint} className="s-icons" /> Print
+        </button>
+        <button>
+        <CSVLink data={allusers} filename={"users.csv"} className='sort-btn'>
+          Export to CSV
+        </CSVLink>
+        </button>
+        <ReactHTMLTableToExcel
+          id="test-table-xls-button"
+          className="download-table-xls-button sort-btn"
+          table="excelTable"
+          filename="excelFile"
+          sheet="tablexls"
+          buttonText="Export to Excel"
+        />
       </div>
       {fetchLoading ? (
         <div>Loading...</div>
@@ -296,16 +371,39 @@ function Table({ title, data,tokenPayLoad }) {
       )}
 
       {editPopupVisible && (
-        <UserEditPopup
-          title={title}  
-          bookingData={selectedItem}
-          onClose={() => setEditPopupVisible(false)}
-          onUpdate={handleEditPopupUpdate}
-        />
+         <Dialog open={editPopupVisible} onClose={handleFormLoad} maxWidth="md" fullWidth>
+         <DialogContent>
+           <UserEditPopup title={title} bookingData={selectedItem} onUpdate={handleEditPopupUpdate} />
+           <form onSubmit={HandleSumitionForm}>
+           <div title={title}>
+
+{title === "Booking Rooms" && (
+ 
+  <div>
+
+   <div class="mb-3">
+     <label for="exampleFormControlInput1" class="form-label">Booking ID</label>
+     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="234" name='bookingID' onChange={HandleChanges}/>
+   </div>
+   <div class="mb-3">
+     <label for="exampleFormControlTextarea1" class="form-label" >Enter Reason</label>
+     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='purpose' onChange={HandleChanges}></textarea>
+   </div>
+   <div style={{display: "flex",alignItems:"center",justifyContent:"center"}}>
+   {error && <div className="error-message">{error.message}</div>}
+      {successMessage && <div className="success-message">{successMessage}</div>}
+   <button >submit</button>
+   </div>
+   
+  </div>
+)}
+</div>
+           </form>
+         </DialogContent>
+       </Dialog>
       )}
 
-      {error && <div className="error-message">{error}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
+
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import authService from '../Services/authService';
 import Navbar from '../navigationBar/navbar';
+import { isExpired, decodeToken } from "react-jwt";
 import { jwtDecode as jwt_decode } from 'jwt-decode';
 import { Table } from '@mui/material';
 
@@ -13,25 +14,27 @@ const Signin = () => {
     email: '',
     password: '',
   });
-
+  const [mytoken,setMyToken]=useState("")
   const [tokenPayLoad, setTokenPayLoad] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const response = await authService.login(credentials);
-      console.log(response?.data);
 
       if (response?.data.accessToken) {
         const accessToken = response?.data?.accessToken;
         const setTokenResult = authService.setToken(accessToken);
-        console.log('setted Token ', setTokenResult);
-
-        const payLoad = jwt_decode(accessToken);
+         
+      
+        const payLoad = jwt_decode(accessToken) 
         setTokenPayLoad(payLoad);
+        console.log('Decoded token:', payLoad);
         payLoad?.authorities === 'admin' ? navigate('/Dashboard') : navigate('/RequestRom');
       }
 

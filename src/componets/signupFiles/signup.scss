@@ -1,72 +1,81 @@
 .Homesignup {
   display: flex;
-  margin-left: 200px;
-  .left-container {
-    flex: 2;
-    background-color: #002e33;
-    color: white;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+  height: 100vh;
 
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.17);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-    padding: 20px;
-    margin: 20px;
-    width: 50%;
-    .head-text{
-      
-        font-family: 'Poppins', sans-serif;
-        font-size: 28px;
-        color: #f9B520; 
-        display: flex;
-        padding-right:  10px;
-  
-    }
-    .rra-image{
-      margin-right: 15px;
-    width: 100px;  
-    height: 100px;
-   margin-bottom: -200px;
-    }
-  }
   .right-container {
-    flex: 6;
-    background-color: #fff;
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.17);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    flex: 1;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .right {
+    background: #ffffff;
     padding: 20px;
-    margin: 20px;
-    margin-left: -20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+
     .user-form {
+      display: flex;
+      flex-direction: column;
+
+      h2 {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
       .user-inp {
-        display: flex;
-        align-items: center;
-        width: 80%;
+        margin-bottom: 15px;
+
+        input,
+        select {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          margin-top: 8px;
+        }
+
         .info-mode {
-          width: 40%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 1px;
-          // .unit {
-          //   margin-left: -30px;
-          // }
+          select {
+            cursor: pointer;
+          }
+        }
+
+        .input {
+          cursor: pointer;
         }
       }
+
+      .success-message {
+        color: #4caf50;
+        margin-bottom: 10px;
+      }
+
+      .error-message {
+        color: #f44336;
+        margin-bottom: 10px;
+      }
+
       .green-btn {
-        width: 150px;
+        background-color: #0F3C40;
+        color: #fff;
         padding: 10px;
         border: none;
-        color: white;
-        background-color: teal;
+        border-radius: 4px;
         cursor: pointer;
-        margin-top: 40px;
       }
-      .green-btn:hover{
-        background-color: #f9B520;
+
+      .green-btn:hover {
+        background-color: #45a049;
       }
     }
   }
 }
+
+/* Additional styles can be added as needed */

@@ -53,19 +53,54 @@
                              border-bottom: 1px solid gray;          
                         }
                     }
-                    button{
-                    width: 150px;
-                    padding: 10px;
-                    border: none;
-                    color: white;
-                    background-color: teal;
-                    cursor: pointer;
-                    margin-top: 10px;
-                    margin-bottom: 30px;
-
-                    }
+                    .green-btn {
+                        width: 150px;
+                        padding: 10px;
+                        border: none;
+                        color: white;
+                        background-color: #008080;
+                        cursor: pointer;
+                        margin-top: 10px;
+                        display: flex;
+                        align-items: center;
+                      }
                 }
             }
         }
+        .widgets{
+           display: flex ;
+           padding: 30px;
+           gap: 20px;
+        }
+        .listContainer{
+           -webkit-box-shadow:2px 4px 10px 1px rgba(0,0,0,0.17);
+           box-shadow: 2px 4px 10px 1px rgba(201,201,201,0.47);
+           padding: 20px;
+           margin: 20px;
+           .listUsers{
+              font-weight: 900;
+              font-size: larger;
+              color: black;
+              margin-bottom: 15px;
+           }
+           .auths{
+              display: flex;
+           //    -webkit-box-shadow:2px 4px 10px 1px rgba(0,0,0,0.17);
+           // box-shadow: 2px 4px 10px 1px rgba(201,201,201,0.47);
+           // padding: 20px;
+           // margin: 20px;
+           }
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px; // Adjust the margin as needed
+          }
+          
+          .error-message {
+            color: red;
+            margin-top: 10px; // Adjust the margin as needed
+          }
+          
     }
 }
+

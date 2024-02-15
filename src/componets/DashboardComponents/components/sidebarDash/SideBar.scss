@@ -9,7 +9,7 @@ $border-radius: 10px;
 
 .sidebar {
   flex: 1;
-  // border-radius: $border-radius;
+  
   border: 0.5px solid $border-color;
   min-height: 100vh;
   background: linear-gradient(to bottom, $gradient-start, $gradient-end);
@@ -60,6 +60,30 @@ $border-radius: 10px;
   .center {
     padding-left: 20px;
 
+    .expansion{
+      // margin-left: -85px;
+      
+    }
+
+    .roomdiv  {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .roomdiv-sub{
+        display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top:4px
+      }
+      .submenu-item{
+          text-decoration: underline;
+      color: #fff;
+     
+      
+      }
+
+    }
     ul {
       list-style: none;
       margin: 0;
@@ -81,9 +105,9 @@ $border-radius: 10px;
         cursor: pointer;
         transition: background-color 0.3s ease;
 
-        &:hover {
-          background-color: $hover-bg-color;
-        }
+        // &:hover {
+        //   background-color: $hover-bg-color;
+        // }
 
         .icon {
           font-size: 24px; 

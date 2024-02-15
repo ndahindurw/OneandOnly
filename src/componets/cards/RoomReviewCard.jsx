@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import authService from "../Services/authService";
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -10,15 +11,17 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { BsFillBookmarkPlusFill } from 'react-icons/bs';
-import { FaLocationDot } from 'react-icons/fa6';
+import CardForm from "./CardForm";
+import { Dialog, DialogContent } from "@mui/material";
+import "./Card.css"
+import axios from "axios";
+import axiosInstance from "../../Axios/axios";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
+  
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
@@ -29,23 +32,72 @@ const ExpandMore = styled((props) => {
 }));
 const today = new Date();
 
+export default function RoomReviewCard({ roomData }) {
+  const  [roomNames,setRoomNames ]= useState();
+  const [error,setError]= useState(null)
+  const userInfo = authService.getUserInfo();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get(process.env.REACT_APP_GET_ROOMNAMES);
+        const roomName = response.data;
+        setRoomNames(roomName);
+        console.log("Room Names inside useEffect: ", roomName);
+      } catch (error) {
+        setError(error);
+        console.log(error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
-export default function RoomReviewCard({roomData}) {
+  console.log("AllNames ", roomNames)
+  
+
+ 
+
+ 
+ 
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [expandedRooms, setExpandedRooms] = useState({});
 
 
-  console.log('Received roomData:', roomData);
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const handleExpandClick = (roomID) => {
+    setExpandedRooms((prevExpandedRooms) => {
+      const newExpandedRooms = {};
+      Object.keys(prevExpandedRooms).forEach((prevRoomID) => {
+        newExpandedRooms[prevRoomID] = false;
+      });
+      newExpandedRooms[roomID] = !prevExpandedRooms[roomID];
+  
+      return newExpandedRooms;
+    });
   };
 
 
+  const handleFormLoad = () => {
+    setIsFormVisible(!isFormVisible);
+    if (!isFormVisible) {
+      scrollToBookingForm();
+    }
+  };
+  
+  
+
  
+  const scrollToBookingForm = () => {
+    document.getElementById('bookingForm').scrollIntoView();
+  };
+  
+
+  
+
   return (
     <>
-      {roomData.map((room, index) => (
-        <Card key={index} sx={{ maxWidth: 420, margin: 2 }}>
+      { roomNames && roomNames.map((room, index)  => (
+         <Card key={index} sx={{ maxWidth: 500, margin: 2, flexBasis: '30%', flexGrow: 1 }}>
           <CardHeader
             avatar={
               <Avatar sx={{ bgcolor: red[500] }} aria-label="rra">
@@ -54,69 +106,76 @@ export default function RoomReviewCard({roomData}) {
             }
             action={
               <IconButton aria-label="settings">
-                <MoreVertIcon />
+               
               </IconButton>
             }
-            title={`Room ${index + 1}`}
+            title={`Room ${room.roomName}`}
             subheader={new Date().toLocaleDateString()}
           />
           <CardMedia>
-            <img src={room.imagePath} alt={`Room ${index}`} style={{ width: '100%', height: '100%' }} />
+            <img src={room.roomID.imagePath} alt={`Room ${index}`} style={{ width: '100%', height: '35vh', objectFit: "cover" }} />
             <CardContent>
               <Typography variant="body2" color="text.secondary">
-                {room.roomDescription}
+  
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi odit vitae quaerat, nulla, aut mollitia assumenda asperiores at unde architecto minima consequatur officiis sint? Eius, sed perferendis! Ut, fugit expedita.
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, aspernatur!
+            
               </Typography>
             </CardContent>
           </CardMedia>
           <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites">
+            <IconButton
+              aria-label="add to favorites"
+              onClick={() => handleFormLoad()}
+            >
               <BsFillBookmarkPlusFill />
             </IconButton>
             <ExpandMore
-              expand={expanded}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
+              expand={expandedRooms[room.roomID.roomID]}
+              onClick={() => handleExpandClick(room.roomID.roomID)}
+              aria-expanded={expandedRooms[room.roomID.roomID]}
               aria-label="show more"
             >
               <ExpandMoreIcon />
             </ExpandMore>
           </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Collapse
+            in={expandedRooms[room.roomID.roomID]}
+            timeout="auto"
+            unmountOnExit
+            sx={{ flexShrink: 0 }}
+          >
             <CardContent>
               <Typography variant="body2" color="text.secondary">
-                Location: {room.roomLocation || 'N/A'}
+                Location: {room.roomID.roomLocation || 'N/A'}
               </Typography>
-              {room.bookings && room.bookings.length > 0 ? (
+              <Typography style={{flexWrap:"wrap"}}>
+               Description: {room.roomID.roomDescription || "N/A"}
+              </Typography>
+              {room.roomID.bookings && room.roomID.bookings.length > 0 ? (
                 <div>
                   <Typography variant="body2" color="text.secondary">
                     Bookings for {today.toLocaleDateString()}:
                   </Typography>
                   <ul>
-                    {room.bookings
-                      .filter(
-                        (booking) =>
-                          new Date(booking.startTime).toLocaleDateString() === today.toLocaleDateString()
-                      )
-                      .map((booking, bookingIndex) => (
-                        <li key={bookingIndex}>
+                        <li>
                           <Typography variant="body2" color="text.secondary">
-                            Start: {new Date(booking.startTime).toLocaleTimeString()}
+                            Start: {new Date(room.roomID.startTime).toLocaleTimeString()}
                           </Typography>
+                          </li><li>
                           <Typography variant="body2" color="text.secondary">
-                            End: {new Date(booking.endTime).toLocaleTimeString()}
+                            End: {new Date(room.roomID.endTime).toLocaleTimeString()}
                           </Typography>
+                          </li><li>
                           <Typography
                             variant="body2"
                             color="text.secondary"
-                            sx={{ color: booking.status ? 'blue' : 'green' }}
+                            sx={{ color: room.roomID.status ? 'blue' : 'green' }}
                           >
-                            Status: {booking.status ? 'BOOKED' : 'READY TO BE BOOKED'}
+                            Status: {room.roomID.status ? 'BOOKED' : 'READY TO BE BOOKED'}
                           </Typography>
                         </li>
-                      ))}
                   </ul>
                 </div>
               ) : (
@@ -126,9 +185,20 @@ export default function RoomReviewCard({roomData}) {
               )}
             </CardContent>
           </Collapse>
-
         </Card>
       ))}
+      
+
+{isFormVisible && (
+        <Dialog open={isFormVisible} onClose={handleFormLoad} maxWidth="md" 
+        fullWidth>
+          <DialogContent>
+            <CardForm closeRoom={() => setIsFormVisible(false)} roomNames={roomNames} />
+          </DialogContent  >
+        </Dialog>
+      )}
     </>
   );
+  
+  
 }

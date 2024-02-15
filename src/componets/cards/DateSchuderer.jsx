@@ -54,37 +54,50 @@ function DateScheduler(props) {
     document.body.classList.remove("cardContainer");
   }
 
+
+  console.log("My Bookinggdd",bookingsData)
+
   const events = bookingsData.map(booking => {
-    // Check if the room object exists before accessing its properties
+
     const roomLocation = booking.room ? booking.room.roomLocation : '';
     
+    const statusClassName = booking.status === 'canceled' ? 'canceled-event' : '';
+  
     return {
       title: roomLocation,
       start: booking.startTime,
       end: booking.endTime,
       description: booking.purpose,
       status: booking.status,
+      className: statusClassName
     };
   });
-
+  
   return (
     <div className="Card">
       <div className="calenderContainer">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          editable={true}
-          selectable={true}
-          events={events}
-          headerToolbar={{
-            start: '',
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
-          }}
-          height={"90vh"}
-          className="custom-calendar"
-        />
+      <FullCalendar
+  plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+  initialView="dayGridMonth"
+  editable={true}
+  selectable={true}
+  events={events}
+  headerToolbar={{
+    start: '',
+    left: 'prev,next today',
+    center: 'title',
+    right: 'dayGridMonth,timeGridWeek,listWeek'
+  }}
+  height={"90vh"}
+  customClassNames={(event) => {
+    const classNames = ['custom-calendar-event'];
+    if (event.status === 'canceled') {
+      classNames.push('canceled-event');
+    }
+    return classNames;
+  }}
+/>
+
       </div>
     </div>
   );
