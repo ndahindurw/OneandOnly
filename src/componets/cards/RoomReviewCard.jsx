@@ -90,9 +90,17 @@ export default function RoomReviewCard({ roomData }) {
   const scrollToBookingForm = () => {
     document.getElementById('bookingForm').scrollIntoView();
   };
-  
 
-  
+  const getRoomStatus = (room) => {
+    const currUserID = authService.getUserInfo()?.userId;
+    const booking = room.bookings.find(bookin => {
+      if (bookin.user.staffID == currUserID) {
+        return true
+      } else return false
+    });
+    if (room.bookings.length === 0 || !booking || booking?.status === "CANCELED") return 0;
+    return booking.status ;
+  }
 
   return (
     <>
@@ -171,9 +179,9 @@ export default function RoomReviewCard({ roomData }) {
                           <Typography
                             variant="body2"
                             color="text.secondary"
-                            sx={{ color: room.roomID.status ? 'blue' : 'green' }}
+                            sx={{ color: getRoomStatus(room.roomID) !== 1 ? 'blue' : 'green' }}
                           >
-                            Status: {room.roomID.status ? 'BOOKED' : 'READY TO BE BOOKED'}
+                            Status: { getRoomStatus(room.roomID) !== 1 ? 'READY FOR BOOKING' : 'BOOKED' }
                           </Typography>
                         </li>
                   </ul>

@@ -79,7 +79,7 @@ function AddRoomName({ title }) {
           <option value="">select a Room Location</option>
           {
             RoomNames.map((room) => (
-              <option key={room.roomID} value={room.roomID}>{room.roomLocation}</option>
+              <option key={room.roomID} value={room.roomID}>{room.roomID}</option>
             ))
           }
         </select>

@@ -14,6 +14,7 @@ import { jwtDecode as jwt_decode } from 'jwt-decode';
 import { Dialog, DialogContent } from '@mui/material';
 import Card from '../../../cards/Card';
 import CardForm from '../../../cards/CardForm';
+import EditRoom from '../../../cards/Editroom';
 
 function Table({ title, data }) {
   const [url, setUrl] = useState('');
@@ -27,12 +28,12 @@ function Table({ title, data }) {
   const [page, setPage] = useState(1);
   const [allusers, setAllusers] = useState([]);
   const [storedToken, setStoredToken] = useState(null);
+  const [roomId, setRoomId] = useState(null);
   const [credentials,setCredentials]=useState({
     bookingID:"",
     purpose:"",
-  })
+  });
   
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -100,6 +101,7 @@ function Table({ title, data }) {
 
   const handleEdit = (item) => {
     setSelectedItem(item);
+    setRoomId(item.roomID);
     setEditPopupVisible(true);
   };
 
@@ -370,38 +372,37 @@ function Table({ title, data }) {
         </div>
       )}
 
-      {editPopupVisible && (
-         <Dialog open={editPopupVisible} onClose={handleFormLoad} maxWidth="md" fullWidth>
-         <DialogContent>
-           <UserEditPopup title={title} bookingData={selectedItem} onUpdate={handleEditPopupUpdate} />
-           <form onSubmit={HandleSumitionForm}>
-           <div title={title}>
-
-{title === "Booking Rooms" && (
- 
-  <div>
-
-   <div class="mb-3">
-     <label for="exampleFormControlInput1" class="form-label">Booking ID</label>
-     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="234" name='bookingID' onChange={HandleChanges}/>
-   </div>
-   <div class="mb-3">
-     <label for="exampleFormControlTextarea1" class="form-label" >Enter Reason</label>
-     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='purpose' onChange={HandleChanges}></textarea>
-   </div>
-   <div style={{display: "flex",alignItems:"center",justifyContent:"center"}}>
-   {error && <div className="error-message">{error.message}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
-   <button >submit</button>
-   </div>
-   
-  </div>
+{editPopupVisible && (
+  <Dialog open={editPopupVisible} onClose={handleFormLoad} maxWidth="md" fullWidth>
+    <DialogContent>
+      <UserEditPopup title={title} bookingData={selectedItem} onUpdate={handleEditPopupUpdate} />
+      <form onSubmit={HandleSumitionForm}>
+        <div title={title}>
+          {title === "Available Some Rooms" ? (
+             <EditRoom title="Edit Room" roomId={roomId} />
+          ) : (
+            <div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Booking ID</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="234" name='bookingID' onChange={HandleChanges}/>
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label" >Enter Reason</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='purpose' onChange={HandleChanges}></textarea>
+              </div>
+              <div style={{display: "flex",alignItems:"center",justifyContent:"center"}}>
+                {error && <div className="error-message">{error.message}</div>}
+                {successMessage && <div className="success-message">{successMessage}</div>}
+                <button >submit</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </form>
+    </DialogContent>
+  </Dialog>
 )}
-</div>
-           </form>
-         </DialogContent>
-       </Dialog>
-      )}
+
 
 
     </div>
