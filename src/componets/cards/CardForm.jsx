@@ -12,16 +12,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as bootstrap from 'bootstrap';
-import RoomReviewCard from "./RoomReviewCard";
-
-
-
-
-
-
 
 const CardForm = ({ roomNames, closeRoom }) => {
-
   const [error, setError] = useState(null);
   const [selectedView, setSelectedView] = useState('dayGridMonth');
   const [selectedRoom, setSelectedRoom] = useState({
@@ -30,6 +22,7 @@ const CardForm = ({ roomNames, closeRoom }) => {
     startTime: "",
     endTime: "",
     purpose: "",
+    roomID: "" // Initialize roomID here
   });
   const [successMessage, setSuccessMessage] = useState(null);
   const [roomData, setRoomData] = useState([]);
@@ -40,7 +33,6 @@ const CardForm = ({ roomNames, closeRoom }) => {
   const [messageTimeout, setMessageTimeout] = useState(null);
   const [isBookingDisabled, setIsBookingDisabled] = useState(false);
   const [previousRoomID, setPreviousRoomID] = useState(null);
-
 
   const clearMessages = () => {
     setError(null);
@@ -69,7 +61,7 @@ const CardForm = ({ roomNames, closeRoom }) => {
         const userData = userResponse.data;
 
         setRoomData(roomData);
-        console.log("room DAta", roomData)
+        console.log("room Data", roomData)
         setUserData(userData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -85,8 +77,7 @@ const CardForm = ({ roomNames, closeRoom }) => {
       try {
         const storedToken = authService.getToken();
 
-        console.log("My Stored Toke", storedToken);
-        
+        console.log("My Stored Token", storedToken);
 
         if (!storedToken) {
           setError("User not authenticated.");
@@ -107,120 +98,129 @@ const CardForm = ({ roomNames, closeRoom }) => {
     fetchData();
   }, []);
 
-
-
-
-
-
   useEffect(() => {
-
     const userId = authService.getUserInfo().userId;
     setSelectedRoom((prevSelectedRoom) => ({
       ...prevSelectedRoom,
       userID: userId,
     }));
   }, []);
+
   const handleChanges = (e) => {
     const value = e.target.name === 'roomID' ? parseInt(e.target.value, 10) : e.target.value;
-    setSelectedRoom({ ...selectedRoom, [e.target.name]: value });
-
-    const room = roomNames.find((room) => room.roomNameID === value);
-    if (room) {
-      setSelectedRoomImage(room.imagePath);
+    if (e.target.name === 'roomNameID') {
+      const selectedRoomData = roomNames.find(room => room.roomName === e.target.value);
+      if (selectedRoomData) {
+        setSelectedRoom(prevState => ({
+          ...prevState,
+          roomNameID: e.target.value,
+          roomID: selectedRoomData.roomID 
+        }));
+        setSelectedRoomImage(selectedRoomData.imagePath);
+      }
+    } else {
+      setSelectedRoom({ ...selectedRoom, [e.target.name]: value });
     }
   };
   
- const handleBooking = async () => {
-  setIsBookingDisabled(true)
-  try {
-    const storedToken = authService.getToken();
-    
-    if (!storedToken) {
-      setError("User not authenticated.");
-      setTimeout(()=>setIsBookingDisabled(false), 2000)
-      return;
-    }
-
-    const userAuthorities = authService.getUserRole();
-
-    if (!userAuthorities || !userAuthorities.includes("user")) {
-      setError("You do not have the authority to book.");
-      setMessageTimeout(setTimeout(clearMessages, 3000));
-      setTimeout(()=>setIsBookingDisabled(false), 2000)
-      return;
-    }
-
-    const selectedStartTime = new Date(selectedRoom.startTime);
-    const currentDate = new Date();
-
-    if (selectedStartTime <= currentDate) {
-      setError("Please select a start time after the current date and time.");
-      setMessageTimeout(setTimeout(clearMessages, 5000));
-      setTimeout(()=>setIsBookingDisabled(false), 2000)
-      return;
-    }
-
-    if (!selectedRoom.roomNameID || !selectedRoom.userID || !selectedRoom.startTime || !selectedRoom.endTime || !selectedRoom.purpose) {
-      setError("Please fill in all required fields.");
-      setMessageTimeout(setTimeout(clearMessages, 5000));
-      setTimeout(()=>setIsBookingDisabled(false), 2000)
-      return;
-    }
-
-    const bookingPayload = {
-      room: {
-        roomID: parseInt(selectedRoom.roomNameID)
-      },
-      user: {
-        staffID: parseInt(selectedRoom.userID)
-      },
-      startTime: selectedRoom.startTime,
-      endTime: selectedRoom.endTime,
-      purpose: selectedRoom.purpose
-    };
-
-    const response = await axios.post(
-      process.env.REACT_APP_BOOK_ENDPOINT,
-      bookingPayload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storedToken}`,
-        },
+  const handleBooking = async () => {
+    setIsBookingDisabled(true);
+    try {
+      const storedToken = authService.getToken();
+      
+      if (!storedToken) {
+        setError("User not authenticated.");
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+        return;
       }
-    );
-
-    if (response.status === 200) {
-      setSuccessMessage("Booking successful!");
-      setMessageTimeout(setTimeout(clearMessages, 5000));
-
-      const updatedResponse = await axiosInstance.get(
-        process.env.REACT_APP_FETCH_EVENTS
-      );
-
-      setTimeout(()=>setIsBookingDisabled(false), 2000)
-      setInptForm(updatedResponse.data);
-      setTimeout(()=> closeRoom(), 2000)
-    } else {
-      setError("Booking failed. Please try again later.");
-      setMessageTimeout(setTimeout(clearMessages, 5000));
-      setTimeout(()=>setIsBookingDisabled(false), 2000)
-    }
-  } catch (error) {
-    if (error.response) {
-      setError(`Server Error: ${error.response.data}`);
-    } else if (error.request) {
-      setError("No response from the server.it  can be another  isue.");
-    } else {
-      setError(`Error: ${error.message}`);
-    }
-    setTimeout(()=>setIsBookingDisabled(false), 2000)
-    setMessageTimeout(setTimeout(clearMessages, 5000));
-  }
-};
-
   
-
+      const userAuthorities = authService.getUserRole();
+  
+      if (!userAuthorities || !userAuthorities.includes("user")) {
+        setError("You do not have the authority to book.");
+        setMessageTimeout(setTimeout(clearMessages, 3000));
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+        return;
+      }
+  
+      const selectedStartTime = new Date(selectedRoom.startTime);
+      const currentDate = new Date();
+  
+      if (selectedStartTime <= currentDate) {
+        setError("Please select a start time after the current date and time.");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+        return;
+      }
+  
+      if (!selectedRoom.roomNameID || !selectedRoom.userID || !selectedRoom.startTime || !selectedRoom.endTime || !selectedRoom.purpose) {
+        setError("Please fill in all required fields.");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+        return;
+      }
+  
+      // Find the room ID based on the selected room name
+      const selectedRoomData = roomNames.find(room => room.roomName === selectedRoom.roomNameID);
+      if (!selectedRoomData) {
+        setError("Invalid room selected.");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+        return;
+      }
+  
+      const bookingPayload = {
+        room: {
+          roomID: selectedRoomData.roomNameID // Use the room ID here
+        },
+        user: {
+          staffID: parseInt(selectedRoom.userID)
+        },
+        startTime: selectedRoom.startTime,
+        endTime: selectedRoom.endTime,
+        purpose: selectedRoom.purpose
+      };
+  
+      const response = await axios.post(
+        process.env.REACT_APP_BOOK_ENDPOINT,
+        bookingPayload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        setSuccessMessage("Booking successful!");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+  
+        const updatedResponse = await axiosInstance.get(
+          process.env.REACT_APP_FETCH_EVENTS
+        );
+  
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+        setInptForm(updatedResponse.data);
+        setTimeout(() => closeRoom(), 2000);
+      } else {
+        setError("Booking failed. Please try again later.");
+        setMessageTimeout(setTimeout(clearMessages, 5000));
+        setTimeout(() => setIsBookingDisabled(false), 2000);
+      }
+    } catch (error) {
+      if (error.response) {
+        setError(`Server Error: ${error.response.data}`);
+      } else if (error.request) {
+        setError("No response from the server. It can be another issue.");
+      } else {
+        setError(`Error: ${error.message}`);
+      }
+      setTimeout(() => setIsBookingDisabled(false), 2000);
+      setMessageTimeout(setTimeout(clearMessages, 5000));
+    }
+  };
+  
   useEffect(() => {
     const overlappingBookingsForSameUser = inptform.filter((booking) => {
       const existingStartTime = new Date(booking.startTime);
@@ -233,87 +233,44 @@ const CardForm = ({ roomNames, closeRoom }) => {
       return isOverlap;
     });
   
-   
   }, [selectedRoom.startTime, selectedRoom.endTime, inptform, selectedRoom.userID]);
   
-  
- 
-  
-
   const scrollToBookingForm = () => {
     document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
   };
 
-  
-const calculateBookedHours = (bookings) => {
-  const bookedHours = {};
+  const bookedEvents = roomData.reduce((events, room) => {
+    const roomLocation = room.roomLocation || 'Unknown Room';
 
-  bookings.forEach((booking) => {
-    const { roomID, startTime, endTime } = booking;
-    const startFormatted = new Date(startTime).toISOString();
-    const endFormatted = new Date(endTime).toISOString();
+    if (room.bookings && room.bookings.length > 0) {
+      const roomEvents = room.bookings.map((booking) => {
+        const start = booking.startTime ? new Date(booking.startTime) : undefined;
+        const end = booking.endTime ? new Date(booking.endTime) : undefined;
 
-    if (!bookedHours[roomID]) {
-      bookedHours[roomID] = [];
+        return {
+          title: roomLocation,
+          start: start,
+          end: end,
+        };
+      });
+
+      return events.concat(roomEvents);
+    } else {
+      return events;
     }
+  }, []);
 
-    bookedHours[roomID].push({ startTime: startFormatted, endTime: endFormatted });
-  });
+  console.log("bookedEvents", bookedEvents); 
+  console.log("room", roomNames);
 
-  return bookedHours;
-};
-
-
-const bookedHours = calculateBookedHours(inptform);
-
-
-
-
-const bookedEvents = roomData.reduce((events, room) => {
-  const roomLocation = room.roomLocation || 'Unknown Room';
-
-  if (room.bookings && room.bookings.length > 0) {
-    const roomEvents = room.bookings.map((booking) => {
-      const start = booking.startTime ? new Date(booking.startTime) : undefined;
-      const end = booking.endTime ? new Date(booking.endTime) : undefined;
-
-      return {
-        title: roomLocation,
-        start: start,
-        end: end,
-      };
-    });
-
-    return events.concat(roomEvents);
-  } else {
-    return events;
-  }
-}, []);
-
-console.log("bookedEvents", bookedEvents); 
-console.log("roooooooooom", roomNames);
-
-
-
-return (
-      
-
-      
-      <div className="cardContainer row">
+  return (
+    <div className="cardContainer row">
       <h3 style={{display:'flex', justifyContent:"center" ,marginBottom:40}}>Room Request</h3>
-
-        {/* <img
-          src={selectedRoomImage || 'https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg'}
-          alt="Room"
-          className="card-image col-xlg-4"
-        /> */}
-
-<div className="desc col-md-10">
+      <div className="desc col-md-10">
         <div className="row">
           <div className="col-md-12">
             <div className="row">
-              <div className="col-md-6">
-                
+              <div className="col-md-6">      
                 <label htmlFor="roomID" className="form-label">Select Room:</label>
                 <select
                   id="roomID"
@@ -330,7 +287,6 @@ return (
                   ))}
                 </select>
               </div>
-
               <div className="col-md-6">         
                 <label htmlFor="userID" className="form-label">Logged User:</label>
                 <input
@@ -343,7 +299,6 @@ return (
                 />
               </div>
             </div>
-
             <div className="row">
               <div className="col-md-6">
                 <label htmlFor="startTime" className="form-label">Start Time</label>
@@ -356,7 +311,6 @@ return (
                   className="form-control"
                 />
               </div>
-
               <div className="col-md-6">
                 <label htmlFor="endTime" className="form-label">End Time</label>
                 <input
@@ -370,7 +324,6 @@ return (
               </div>
             </div>
           </div>
-
           <div className="col-md-12">
             <div className="row">
               <div className="col-md-12">
@@ -386,18 +339,16 @@ return (
               </div>
             </div>
           </div>
-          </div>
-
-
           <div>
             {successMessage && <div className="success-message">{successMessage}</div>}
             {error && <div className="error-message">{error}</div>}
             <button className="green-btn" onClick={handleBooking} disabled={isBookingDisabled}>
-    Book the Room
-  </button>
+              Book the Room
+            </button>
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

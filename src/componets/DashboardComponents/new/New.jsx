@@ -56,34 +56,29 @@ function New({ title }) {
     const imgs = new Image();
     const fileReader = new FileReader();
     const newFormData = new FormData();
-
+  
     const getDimensions = () => {
       return new Promise((resolve) => {
         imgs.onload = () => resolve({ width: imgs.width, height: imgs.height });
       });
     };
-
+  
     fileReader.onload = async (e) => {
       imgs.src = e.target.result;
-
+  
       const dimension = await getDimensions();
-
-      if (dimension.width === 2048 && dimension.height === 1152) {
-        newFormData.append('file', file);
-        setMessageTimeout(setTimeout(clearMessages, 4000));
-
-      } else {
+  
+      if (dimension.width >= 2440 || dimension.height >=  1500) {
         setSelectedImage(null);
-        setError('Image dimensions must be 420x236 pixels or smaller.');
-        // setMessageTimeout(setTimeout(clearMessages, 3500));
+        setError('Image dimensions must be 1440x810 pixels or smaller.');
+        return; 
+      } else {
+        setSelectedImage(dimension);
+        newFormData.append('file', file);
+        setMessageTimeout(setTimeout(clearMessages, 6000));
       }
-
-
-      newFormData.append('roomDescription', formInputs.roomDescription);
-      newFormData.append('roomLocation', formInputs.roomLocation);
-      newFormData.append('capacity', formInputs.capacity);
-
-
+  
+      // Set other form data fields
       setFormInputs({
         ...formInputs,
         file: newFormData,
@@ -91,16 +86,17 @@ function New({ title }) {
         capacity: formInputs.capacity,
         roomDescription: formInputs.roomDescription,
       });
-
+  
       setSelectedImage(URL.createObjectURL(file));
     };
-
+  
     if (file) {
       fileReader.readAsDataURL(file);
     } else {
       setSelectedImage(null);
     }
   };
+  
 
   const notify = () => {
     toast.success('Success', { position: toast.POSITION.TOP_CENTER });

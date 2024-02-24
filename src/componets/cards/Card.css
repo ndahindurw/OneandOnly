@@ -270,4 +270,11 @@ button:hover {
   background-color: red;
   color: white; 
 }
-
+.content-info{
+  display: block;
+}
+.all-info {
+  display: block;
+  flex-direction: column; 
+  margin-bottom: 20px; 
+}
