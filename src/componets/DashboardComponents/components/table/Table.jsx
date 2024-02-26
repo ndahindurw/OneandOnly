@@ -234,17 +234,27 @@ function Table({ title, data }) {
   };
 
   const renderTable = () => {
-    if (!allusers[page - 1] || allusers[page - 1].length === 0) {
+    if (!allusers || !Array.isArray(allusers) || allusers.length === 0 || !allusers[page - 1]) {
       return <p>No data available</p>;
     }
   
-    const columns = Object.keys(allusers[page - 1][0]);
+    const currentPageData = allusers[page - 1];
+  
+    if (!currentPageData || currentPageData.length === 0) {
+      return <p>No data available for the current page</p>;
+    }
+  
+    let columns;
+    if (title === 'Booking Rooms') {
+      columns = Object.keys(currentPageData[0].booking);
+    } else if (title === 'ListAllusers') {
+      columns = Object.keys(currentPageData[0]);
+    } else {
+      // Handle other cases if needed
+    }
+  
     const filteredColumns = columns.filter((column) => column.toLowerCase() !== 'password');
     const newData = filteredColumns.filter((booking) => booking.toLowerCase() !== 'bookings');
-  
-    console.log('colums data', columns);
-    console.log('filtered Data', filteredColumns);
-    console.log('new Data', newData);
   
     return (
       <div className="table-container" id="formz">
@@ -259,8 +269,8 @@ function Table({ title, data }) {
               </tr>
             </thead>
             <tbody>
-              {allusers[page - 1]
-                .filter((item) => !item.isDeleted) 
+              {currentPageData
+                .filter((item) => !item.isDeleted)
                 .filter((item) =>
                   userData.trim() === ''
                     ? true
@@ -274,20 +284,19 @@ function Table({ title, data }) {
                     {newData.map((column) => (
                       <td key={column}>
                         {column === 'room'
-                          ? item[column]?.roomLocation
+                          ? item.booking[column]?.roomLocation
                           : column === 'user'
-                          ? item[column]?.fullnames
-                          : column === 'units' && item[column]
-                          ? item[column].unitName
-                          : column === 'departments' && item[column]
-                          ? item[column].departmentName
-                          : typeof item[column] === 'object'
-                          ? JSON.stringify(item[column])
-                          : item[column]}
+                          ? item.booking[column]?.fullnames
+                          : column === 'units' && item.booking[column]
+                          ? item.booking[column].unitName
+                          : column === 'departments' && item.booking[column]
+                          ? item.booking[column].departmentName
+                          : typeof item.booking[column] === 'object'
+                          ? JSON.stringify(item.booking[column])
+                          : item.booking[column]}
                       </td>
-                      
                     ))}
-                    
+  
                     <td className="button-cell">
                       <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
                         <FontAwesomeIcon icon={faEdit} className="s-icons" />
@@ -296,7 +305,6 @@ function Table({ title, data }) {
                         <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
                       </button>
                     </td>
-                    
                   </tr>
                 ))}
             </tbody>
@@ -313,8 +321,7 @@ function Table({ title, data }) {
             <button
               className="next"
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={page === 
-                allusers.length}
+              disabled={page === allusers.length}
             >
               Next
             </button>
@@ -323,6 +330,8 @@ function Table({ title, data }) {
       </div>
     );
   };
+  
+  
 
   const printList = () => {
     window.print();

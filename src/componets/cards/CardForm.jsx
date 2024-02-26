@@ -13,16 +13,15 @@ import interactionPlugin from '@fullcalendar/interaction'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as bootstrap from 'bootstrap';
 
-const CardForm = ({ roomNames, closeRoom }) => {
+const CardForm = ({ roomNames, closeRoom,clickedRoom }) => {
   const [error, setError] = useState(null);
   const [selectedView, setSelectedView] = useState('dayGridMonth');
   const [selectedRoom, setSelectedRoom] = useState({
-    roomNameID: "",
+    roomID: clickedRoom,
     userID: "",
     startTime: "",
     endTime: "",
     purpose: "",
-    roomID: "" // Initialize roomID here
   });
   const [successMessage, setSuccessMessage] = useState(null);
   const [roomData, setRoomData] = useState([]);
@@ -32,7 +31,7 @@ const CardForm = ({ roomNames, closeRoom }) => {
   const [selectedRoomImage, setSelectedRoomImage] = useState('');
   const [messageTimeout, setMessageTimeout] = useState(null);
   const [isBookingDisabled, setIsBookingDisabled] = useState(false);
-  const [previousRoomID, setPreviousRoomID] = useState(null);
+ 
 
   const clearMessages = () => {
     setError(null);
@@ -108,19 +107,17 @@ const CardForm = ({ roomNames, closeRoom }) => {
 
   const handleChanges = (e) => {
     const value = e.target.name === 'roomID' ? parseInt(e.target.value, 10) : e.target.value;
-    if (e.target.name === 'roomNameID') {
-      const selectedRoomData = roomNames.find(room => room.roomName === e.target.value);
-      if (selectedRoomData) {
+  
+      if (selectedRoom) {
         setSelectedRoom(prevState => ({
           ...prevState,
-          roomNameID: e.target.value,
-          roomID: selectedRoomData.roomID 
+          roomID: selectedRoom.roomID 
         }));
-        setSelectedRoomImage(selectedRoomData.imagePath);
+      
+      }else {
+        setSelectedRoom({ ...selectedRoom, [e.target.name]: value });
       }
-    } else {
-      setSelectedRoom({ ...selectedRoom, [e.target.name]: value });
-    }
+    
   };
   
   const handleBooking = async () => {
@@ -153,25 +150,18 @@ const CardForm = ({ roomNames, closeRoom }) => {
         return;
       }
   
-      if (!selectedRoom.roomNameID || !selectedRoom.userID || !selectedRoom.startTime || !selectedRoom.endTime || !selectedRoom.purpose) {
+      if (!selectedRoom.roomID || !selectedRoom.userID || !selectedRoom.startTime || !selectedRoom.endTime || !selectedRoom.purpose) {
         setError("Please fill in all required fields.");
         setMessageTimeout(setTimeout(clearMessages, 5000));
         setTimeout(() => setIsBookingDisabled(false), 2000);
         return;
       }
   
-      // Find the room ID based on the selected room name
-      const selectedRoomData = roomNames.find(room => room.roomName === selectedRoom.roomNameID);
-      if (!selectedRoomData) {
-        setError("Invalid room selected.");
-        setMessageTimeout(setTimeout(clearMessages, 5000));
-        setTimeout(() => setIsBookingDisabled(false), 2000);
-        return;
-      }
+     
   
       const bookingPayload = {
         room: {
-          roomID: selectedRoomData.roomNameID // Use the room ID here
+          roomID: selectedRoom.roomID 
         },
         user: {
           staffID: parseInt(selectedRoom.userID)
@@ -271,21 +261,15 @@ const CardForm = ({ roomNames, closeRoom }) => {
           <div className="col-md-12">
             <div className="row">
               <div className="col-md-6">      
-                <label htmlFor="roomID" className="form-label">Select Room:</label>
-                <select
+                <label htmlFor="roomID" className="form-label"> Room:</label>
+                <input
                   id="roomID"
                   onChange={handleChanges}
-                  name="roomNameID"
-                  value={selectedRoom.roomNameID}
+                  name="roomID"
+                  value={selectedRoom.roomID}
                   className="form-select"
-                >
-                  <option>Select Room</option>
-                  {roomNames && roomNames.map((room) => (
-                    <option key={room.roomNameID} value={room.roomNameID}>
-                      {room.roomName}
-                    </option>
-                  ))}
-                </select>
+                  placeholder={selectedRoom.roomID}
+                />
               </div>
               <div className="col-md-6">         
                 <label htmlFor="userID" className="form-label">Logged User:</label>

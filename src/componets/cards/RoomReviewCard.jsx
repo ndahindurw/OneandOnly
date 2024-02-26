@@ -31,7 +31,7 @@ const ExpandMore = styled((props) => {
 
 const today = new Date();
 
-export default function RoomReviewCard({ roomData, clickedRoom }) {
+export default function RoomReviewCard({ roomData }) {
   const [roomNames, setRoomNames] = useState([]);
   const [error, setError] = useState(null);
   const [photoos, setPhotoos] = useState({
@@ -43,6 +43,7 @@ export default function RoomReviewCard({ roomData, clickedRoom }) {
   });
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [expandedRooms, setExpandedRooms] = useState({});
+  const [clickedRoom,setClikedRoom]= useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,11 +73,12 @@ export default function RoomReviewCard({ roomData, clickedRoom }) {
     }));
   };
 
-  const handleFormLoad = (roomID) => {
+  const handleFormLoad = ({roomID,e}) => {
     setIsFormVisible(!isFormVisible);
     if (!isFormVisible) {
       scrollToBookingForm();
     }
+  setClikedRoom(roomID)
   };
 
   const scrollToBookingForm = () => {
@@ -226,9 +228,9 @@ export default function RoomReviewCard({ roomData, clickedRoom }) {
             <CardActions disableSpacing>
               <IconButton
                 aria-label="add to favorites"
-                onClick={() => handleFormLoad(room.roomID)}
+                onClick={(e) => handleFormLoad(room.roomID)}
               >
-                <BsFillBookmarkPlusFill />
+                <BsFillBookmarkPlusFill  />
               </IconButton>
               <ExpandMore
                 expand={expandedRooms[room.roomID]}
@@ -263,7 +265,7 @@ export default function RoomReviewCard({ roomData, clickedRoom }) {
                 <CardForm
                   closeRoom={() => setIsFormVisible(false)}
                   roomNames={roomNames}
-                  // selectedRoom={room.roomID}
+                  clickedRoom={clickedRoom}
                 />
               </DialogContent>
             </Dialog>

@@ -21,9 +21,11 @@ import { Routes, Route } from "react-router-dom";
 import UserRoutes from "./UserRoutes";
 import Setting from "../componets/DashboardComponents/single/settings";
 import Table from "../componets/DashboardComponents/components/table/Table";
+import RenderUsers from "../componets/DashboardComponents/components/table/RenderUsersList";
 import { ContactPage } from "@mui/icons-material";
 import ContactP from "../componets/signupFiles/ContactP";
 import AddRoomName from "../componets/DashboardComponents/new/AddRoomName";
+import RenderRoom from "../componets/DashboardComponents/components/table/RenderRoom";
 
 
 function App() {
@@ -47,7 +49,7 @@ function App() {
             
             } />
             <Route path="ListAllusers"  element={
-            <AdminRoute><Table title="ListAllusers" /></AdminRoute>
+            <AdminRoute><RenderUsers title="ListAllusers" /></AdminRoute>
             } />
             <Route path=":userId" element={<Setting />} />
             <Route path="new-user" element={
@@ -64,9 +66,9 @@ function App() {
           </Route>
 
           <Route path="Rooms/*">
-            <Route path="List-Availble-Rooms" element={<AdminRoute><Table title="Available Some Rooms" /></AdminRoute>} />
+            <Route path="List-Availble-Rooms" element={<AdminRoute><RenderRoom title="Available Some Rooms" /></AdminRoute>} />
             <Route path="List-Booked-Rooms" element={
-            <AdminRoute><Table title="Booked  Rooms" /></AdminRoute>
+            <AdminRoute><RenderRoom title="Booked  Rooms" /></AdminRoute>
             } />
 
             <Route path="new-rooms" element={
