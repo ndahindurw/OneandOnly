@@ -52,14 +52,15 @@ function AddRoomName({ title }) {
         if (res && Array.isArray(res.data)) {
           setRoomName(res.data);
           console.log("res", res);
-          setSuccessMessage("Submission successful!");
+          
           setTimeout(() => {
-            setSuccessMessage("");
+            setSuccessMessage("Submission successful!");
           }, 3000);
         }
       })
       .catch((error) => {
         setError(error);
+        
       });
   };
 

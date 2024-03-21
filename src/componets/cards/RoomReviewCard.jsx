@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -17,6 +16,8 @@ import axiosInstance from "../../Axios/axios";
 import { image0, image2, image3, image5, image4 } from "../images";
 import CardForm from "./CardForm";
 import { set } from "date-fns";
+import './Card.css'
+import React, { useEffect, useState, useRef } from "react";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -34,16 +35,10 @@ const today = new Date();
 export default function RoomReviewCard({ roomData }) {
   const [roomNames, setRoomNames] = useState([]);
   const [error, setError] = useState(null);
-  const [photoos, setPhotoos] = useState({
-    image0,
-    image2,
-    image3,
-    image5,
-    image4,
-  });
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [expandedRooms, setExpandedRooms] = useState({});
   const [clickedRoom,setClikedRoom]= useState([])
+  const cardRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +56,19 @@ export default function RoomReviewCard({ roomData }) {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cardRef.current && !cardRef.current.contains(event.target)) {
+        setIsFormVisible(false); 
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFormVisible]);
+  
 
   const handleExpandClick = (roomID) => {
     setExpandedRooms((prevExpandedRooms) => ({
@@ -91,38 +99,34 @@ export default function RoomReviewCard({ roomData }) {
       return {
         status: "AVAILABLE",
         timeDifference: "0 days 0h:0min left to book",
-      }; // Return 'AVAILABLE' when there are no bookings
+      };
     }
 
-    // Find the earliest booking after the current time
+
     const nextBooking = room.roomID.bookings.reduce(
       (earliestBooking, currentBooking) => {
         const currentStartTime = new Date(currentBooking.startTime);
         const earliestStartTime = earliestBooking
           ? new Date(earliestBooking.startTime)
-          : null; // Use null as initial value
+          : null; 
         return earliestBooking === null ||
           currentStartTime < earliestStartTime
           ? currentBooking
           : earliestBooking;
       },
       null
-    ); // Provide null as initial value
-
-    // Check if nextBooking is defined and startTime is a valid time value
+    ); 
     if (!nextBooking || isNaN(new Date(nextBooking.startTime).getTime())) {
       return {
         status: "UNKNOWN",
         timeDifference: "0 days 0h:0min left to book",
-      }; // Handle invalid time value
+      }; 
     }
 
-    // Calculate the time difference between now and the next booking's start time
     const currentTime = new Date();
     const bookingStartTime = new Date(nextBooking.startTime);
     const bookingEndTime = new Date(nextBooking.endTime);
 
-    // If the current time is before the booking start time, room is AVAILABLE
     if (currentTime < bookingStartTime) {
       const timeDiffInMs = bookingStartTime - currentTime;
       const days = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
@@ -135,14 +139,13 @@ export default function RoomReviewCard({ roomData }) {
         timeDifference: `${days} days ${hours}h:${minutes}min`,
       };
     }
-    // If the current time is after the booking end time, room is AVAILABLE
     else if (currentTime > bookingEndTime) {
       return {
         status: "AVAILABLE",
         timeDifference: "0 days 0h:0min left to book",
       };
     }
-    // If the current time is between booking start and end time, room is BOOKED
+  
     else {
       const timeDiffInMs = bookingEndTime - currentTime;
       const days = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
@@ -173,7 +176,7 @@ export default function RoomReviewCard({ roomData }) {
               }
               action={
                 <IconButton aria-label="settings">
-                  {/* Placeholder for settings */}
+                 
                 </IconButton>
               }
               title={` ${room.roomName ? room.roomName : room.roomID.roomName}`}
@@ -200,14 +203,14 @@ export default function RoomReviewCard({ roomData }) {
               <Typography variant="body2" color="text.secondary">
                 Location: {room.roomID.roomLocation || "N/A"}
               </Typography>
-              {/* Display room status and time difference */}
+             
               <Typography variant="body2" color="text.secondary">
                 Status: {getRoomStatus(room).status || "N/A"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Next booked hours (hours): {getRoomStatus(room).timeDifference || "N/A"}
               </Typography>
-              {/* Display booking information */}
+              
               {roomData &&
                 roomData.map((booking, index) => (
                   booking.roomId === room.roomID && (
@@ -247,9 +250,7 @@ export default function RoomReviewCard({ roomData }) {
               unmountOnExit
               sx={{ flexShrink: 0 }}
             >
-              <CardContent>
-                {/* Additional information you want to display when expanded */}
-              </CardContent>
+              
             </Collapse>
           </Card>
         ))}
@@ -261,11 +262,13 @@ export default function RoomReviewCard({ roomData }) {
               maxWidth="md"
               fullWidth
             >
-              <DialogContent>
+              <DialogContent className="dialog-content">
                 <CardForm
+                  ref={cardRef}
                   closeRoom={() => setIsFormVisible(false)}
                   roomNames={roomNames}
                   clickedRoom={clickedRoom}
+                  
                 />
               </DialogContent>
             </Dialog>

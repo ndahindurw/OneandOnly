@@ -106,19 +106,13 @@ const CardForm = ({ roomNames, closeRoom,clickedRoom }) => {
   }, []);
 
   const handleChanges = (e) => {
-    const value = e.target.name === 'roomID' ? parseInt(e.target.value, 10) : e.target.value;
-  
-      if (selectedRoom) {
-        setSelectedRoom(prevState => ({
-          ...prevState,
-          roomID: selectedRoom.roomID 
-        }));
-      
-      }else {
-        setSelectedRoom({ ...selectedRoom, [e.target.name]: value });
-      }
-    
+    const { name, value } = e.target;
+    setSelectedRoom(prevState => ({
+      ...prevState,
+      [name]: value 
+    }));
   };
+  
   
   const handleBooking = async () => {
     setIsBookingDisabled(true);

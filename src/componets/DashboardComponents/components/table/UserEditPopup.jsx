@@ -3,18 +3,17 @@ import { Link } from 'react-router-dom';
 import useFetch from '../../../../hooks/useFetch';
 import axios from 'axios';
 
-const BookingEditPopup = ({ title}) => {
+const UserEditPopup = ({ title,clickedUser}) => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [credentials, setCredentials] = useState({
-    fullnames: "",
-    email: "",
-    password: "",
-    empNo: "",
-    mobileNo: "",
-    position: "",
-    unit: "",
-    department: "",
+    fullnames: clickedUser.fullnames,
+    email:clickedUser.email,
+    password: clickedUser.password,
+    empNo: clickedUser.empNo,
+    mobileNo: clickedUser.mobileNo,
+    position: clickedUser.position,
+    units: clickedUser.units,
   });
 
   const { data: units } = useFetch({
@@ -24,13 +23,53 @@ const BookingEditPopup = ({ title}) => {
     url: process.env.REACT_APP_FETCH_DEPARTMENT,
   });
 
+
+  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    if (name === "unitID") {
+      const selectedUnit = units.find(unit => unit.unitID.toString() === value);
+      if (selectedUnit) {
+        setCredentials(prevCredentials => ({
+          ...prevCredentials,
+          units: {
+            unitID: selectedUnit.unitID,
+            unitName: selectedUnit.unitName
+          }
+        }));
+      }
+    } else {
+      setCredentials(prevCredentials => ({
+        ...prevCredentials,
+        [name]: value,
+      }));
+    }
+  };
+  
+  
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const dataToSend = {
+      staffID: clickedUser.staffID, 
+      fullnames: credentials.fullnames,
+      password: credentials.password,
+      empNo: credentials.empNo,
+      userNo: clickedUser.userNo, 
+      mobileNo: credentials.mobileNo,
+      email: credentials.email,
+      position: credentials.position,
+      unitID: credentials.units.unitID
+    };
+  
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_SIGNUP}`,
-        credentials,
+      const response = await axios.put(
+        process.env.REACT_APP_USER_UPDATE,
+        dataToSend, // Send the adjusted data
         {
           headers: {
             "Content-Type": "application/json",
@@ -38,49 +77,38 @@ const BookingEditPopup = ({ title}) => {
           },
         }
       );
-
+  
       if (response.status === 200) {
-        setError(null);
-        setSuccessMessage("Account successfully created!");
-        console.log("successfully saved");
-        console.log(response.data, response.status);
+        setSuccessMessage("Account successfully updated!");
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 4000);
       } else {
-        if (response.data && response.data.msg) {
-          setError(response.data.msg);
-        } else {
-          throw new Error("Could not Post Data", error);
-        }
+        throw new Error("Could not update the data");
       }
     } catch (err) {
-      console.error("Error during signup:", err);
       setError(err.message);
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
     }
   };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setCredentials((prevCredentials) => ({
-      ...prevCredentials,
-      [name]: value,
-    }));
-  };
-
- const  handleUpdate=()=>{
-
- }
+  
+  
+  
  
-  const renderUserForm=()=>{
+
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={{width:900}}>
       <div className="row justify-content-center">
-        <div className="col-md-8">
+        <div className="col-lg-8" style={{}}>
           <form
             action=""
             className="user-form p-3 border"
             onSubmit={handleSubmit}
+            
           >
-            <h2 className="text-center mb-4">Create Account</h2>
+            <h2 className="text-center mb-4">Update Account</h2>
             <div className="row mb-3">
               <div className="col-md-6">
                 <label htmlFor="fullnames" className="form-label">
@@ -95,6 +123,7 @@ const BookingEditPopup = ({ title}) => {
                   className="form-control"
                   onChange={handleChange}
                 />
+                
               </div>
               <div className="col-md-6">
                 <label htmlFor="email" className="form-label">
@@ -161,20 +190,20 @@ const BookingEditPopup = ({ title}) => {
                   Unit
                 </label>
                 <select
-  id="selectBox"
   onChange={handleChange}
   name="unitID" 
-  value={credentials.unitID}
+  value={credentials.units.unitID} 
   className="form-select"
 >
   <option value="">Select a Unit</option>
-  {units &&
-    units.map((unit) => (
-      <option key={unit.unitID} value={unit.unitID}>
-        {unit.unitName}
-      </option>
-    ))}
+  {units && units.map((unit) => (
+    <option key={unit.unitID} value={unit.unitID}>
+      {unit.unitName}
+    </option>
+  ))}
 </select>
+
+
 
               </div>
             </div>
@@ -197,61 +226,13 @@ const BookingEditPopup = ({ title}) => {
             )}
             {error && <div className="alert alert-danger">{error}</div>}
             <button type="submit" className="green-btn btn-success ">
-              Register
+              Update
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-}
-
-  const renderBookingForm = () => {
-    return (
-      <div className="popup">
-        <label>Booking ID:</label>
-        <input
-          type="text"
-          value={credentials.room.bookingID}
-          onChange={(e) => handleChange('room', { ...credentials.room, bookingID: e.target.value })}
-        />
-        <label>Room ID:</label>
-        <input
-          type="text"
-          value={credentials.room.roomID}
-          onChange={(e) => handleChange('room', { ...credentials.room, roomID: e.target.value })}
-        />
-        <label>User Staff ID:</label>
-        <input
-          type="text"
-          value={credentials.user.staffID}
-          onChange={(e) => handleChange('user', { ...credentials.user, staffID: e.target.value })}
-        />
-        <label>Start Time:</label>
-        <input
-          type="datetime-local"
-          value={credentials.startTime}
-          onChange={(e) => handleChange('startTime', e.target.value)}
-        />
-        <label>End Time:</label>
-        <input
-          type="datetime-local"
-          value={credentials.endTime}
-          onChange={(e) => handleChange('endTime', e.target.value)}
-        />
-        <label>Purpose:</label>
-        <input
-          type="text"
-          value={credentials.purpose}
-          onChange={(e) => handleChange('purpose', e.target.value)}
-        />
-        <button onClick={handleUpdate}>Update</button>
-        
-      </div>
-    );
-  };
-  
-  return (title == 'ListAllusers') ? <renderUserForm /> : <renderBookingForm />;
 };
 
-export default BookingEditPopup;
+export default UserEditPopup;
