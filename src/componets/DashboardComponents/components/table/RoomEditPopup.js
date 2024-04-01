@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Widget from '../widget/WidgetApp';
 import { RoomInputs } from '../FormSource';
 import axiosInstance from '../../../../Axios/axios';
+import authService from '../../../Services/authService';
 
 function RoomEditPopup({ title, clickedRoom }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -74,7 +75,7 @@ function RoomEditPopup({ title, clickedRoom }) {
           method: 'put',
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
+            'Authorization': `Bearer ${authService.getToken()}`
           },
           body : formData,
         }

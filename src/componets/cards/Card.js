@@ -1,4 +1,6 @@
-import React, { useEffect, useState,useRef } from "react";
+//Previous Card
+
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import authService from "../Services/authService";
 import axiosInstance from "../../Axios/axios";
@@ -7,10 +9,9 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import RoomReviewCard from "./RoomReviewCard";
 import { Dialog, DialogContent } from "@mui/material";
 
-const Card = ({ bookedHours }) => {
+const Card = ({filteredRooms}) => {
   const [error, setError] = useState(null);
   const [roomData, setRoomData] = useState([]);
-  const [userData, setUserData] = useState([]);
   const [inptform, setInptForm] = useState([]);
   const [bookingsData, setBookingsData] = useState([]);
   const [canceledRoom, setCanceledRoom] = useState([])
@@ -29,7 +30,7 @@ const Card = ({ bookedHours }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const storedToken = authService.getToken();
+    const storedToken = authService.getToken();
 
       if (!storedToken) {
         setError("User not authenticated.");
@@ -76,11 +77,11 @@ const Card = ({ bookedHours }) => {
   const HandleChanges = (e) => {
     const { name, value } = e.target;
     setCredentials((prevCredentials) => ({
-      ...prevCredentials, 
+      ...prevCredentials,
       [name]: value
     }));
   };
-  
+
 
   const storedToken = authService.getToken();
   useEffect(() => {
@@ -95,55 +96,43 @@ const Card = ({ bookedHours }) => {
         const roomResponse = await axiosInstance.get(
           process.env.REACT_APP_FETCH_EVENTS
         );
-
-        const userResponse = await axiosInstance.get(
-          process.env.REACT_APP_FETCH_USER_DATA_URL
-        );
-
         const roomData = roomResponse.data;
-        const userData = userResponse.data;
 
         setRoomData(roomData);
-        setUserData(userData);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError("Error fetching data.");
+        setError("Error fetching data bgfghgf.");
       }
     };
 
     fetchData();
-  }, [successMessage]);
+  }, []);
 
   console.log("Room Booking Information", roomData);
   const openDeleteDialog = (room) => {
-    
     if (room && room.booking && room.booking.bookingID) {
-      
+      setClickedRoom(room); 
       setCredentials(prevCredentials => ({
         ...prevCredentials,
         bookingID: room.booking.bookingID 
-        
       }));
+      setDeleteDialogOpen(true); 
+    } else {
+      console.error("Booking information not found for the selected room.");
     }
-    setDeleteDialogOpen(true);
   };
   
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (cardContainerRef.current && !cardContainerRef.current.contains(event.target)) {
-        setIsExpanded(false);
-      }
-    };
-  
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+ 
 
   const closeDeleteDialog = () => {
+    console.log("Closing delete dialog");
     setDeleteDialogOpen(false);
     setSelectedRoom(null);
+  };
+
+
+  const collapseDisplay = () => {
+    setIsExpanded(false);
   };
 
 
@@ -153,7 +142,7 @@ const Card = ({ bookedHours }) => {
       setError("User not authenticated.");
       return;
     }
-  
+
     try {
       const response = await axios.delete(
         process.env.REACT_APP_CLIENT_CANCEL_BOOKING,
@@ -177,10 +166,13 @@ const Card = ({ bookedHours }) => {
       console.error("Error fetching bookings data:", error);
     }
   };
-  
-  
-  
-  
+
+
+
+  console.log(clickedRoom, "sdfsdfClickedRoom")
+
+
+
   const foundRoom = roomNames.find(room => room.roomNameID);
   const roomName = foundRoom ? foundRoom.roomName : "Not Found";
 
@@ -190,43 +182,67 @@ const Card = ({ bookedHours }) => {
       <div className="room-review-card-container">
         <RoomReviewCard
           roomData={roomData}
-          bookedHours={bookedHours}
-          clickedRoom={clickedRoom}
-          inptform={inptform}
         />
       </div>
+      {console.log("filtered rooms",roomData)}
       <div className="cardContainer-main"  >
         {roomNames.length > 0 && roomData.map((romm, index) => (
-          <div key={index}>
+          <div key={index +1}>
             <div
               key={romm.roomId}
               className="cardContainersz"
               onClick={() => setClickedRoom(romm)}
               ref={cardContainerRef}
             >
-              <div className="all-info" >
+              <div className="all-info" id="allInfo" onClick={() => setIsExpanded(!isExpanded)}>
                 <h1>{romm.name}</h1>
 
-                {clickedRoom && clickedRoom.roomId === romm.roomId ? (
+                {isExpanded && clickedRoom && clickedRoom.roomId === romm.roomId ? (
                   <>
-                    <div>
+                    <div >
 
-                  
-
-
-                      {console.log(romm.booking.bookingID, "Debuggss RoomName")}
+                      {console.log(romm.booking.user.fullNames, "Debuggss RoomName")}
 
                       <p>Room ID: {clickedRoom.roomId}</p>
                       <p>Start Time: {clickedRoom.booking.startTime}</p>
                       <p>End Time: {clickedRoom.booking.endTime}</p>
                       <p>Status: {romm.booking.status}</p>
+                      <p>User Booked: {romm.booking.user.fullnames}</p>
                       <button onClick={() => openDeleteDialog(romm)}>Release Room</button>
 
                       <hr />
                     </div>
-                    <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+                                      
+
+                  </>
+                ) : (
+                  <p className="parag-intro" id="para-header">
+                    Booking information for Room Name:{" "}
+                    <span className="RoomName">
+                      {roomNames.map((room, index) => {
+                        const bookingsForRoom = bookingsData.filter(booking => booking.roomId === room.roomID.roomID);
+                        if (bookingsForRoom.length > 0) {
+                          const roomId = room.roomID.roomID;
+                          const roomName = room.roomName;
+                          return (
+                            <span key={index}>
+                              <div> (Room ID: {roomId}) </div>
+
+                            </span>
+                          );
+                        }
+                        return null;
+                      })}
+                    </span>
+                  </p>
+
+                )}
+              </div>
+
+              <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
                       <DialogContent>
-                        <div>Are you sure you want to delete this Room?</div>
+                      {console.log("Rendering delete dialog")}
+                        <div>Are you sure you want to Release this Room?</div>
                         <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
                           <label for="exampleFormControlInput1" class="form-label">Booking ID</label>
 
@@ -241,25 +257,21 @@ const Card = ({ bookedHours }) => {
                         </div>
                         <div class="mb-3">
                           <label for="exampleFormControlTextarea1" class="form-label" >Enter Reason</label>
-                          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='purpose'  onChange={(e)=>HandleChanges(e)}></textarea>
+                          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='purpose' onChange={(e) => HandleChanges(e)}></textarea>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                           {error && <div className="error-message">{error.message}</div>}
                           {successMessage && <div className="success-message">{successMessage}</div>}
-                          {console.log(roomNames.find(room=>room.roomId  && room.roomId === romm.roomId)?.rom.roomName,"gddfffffffffff")}
                           <button onClick={() => openDialogframe(romm.roomId)}>Free</button>
                           <button onClick={closeDeleteDialog} style={{ marginLeft: '10px' }}>Cancel</button>
                         </div>
+
                       </DialogContent>
                     </Dialog>
-                  </>
-                ) : (
-                  <p className="parag-intro"> Booking information for Room Name : <span className="RoomName">{romm.booking.bookingID}</span></p>
-                  
-                )}
-              </div>
             </div>
           </div>
+
+          
         ))}
       </div>
     </div>

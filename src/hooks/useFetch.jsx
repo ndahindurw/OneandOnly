@@ -17,7 +17,6 @@ function useFetch({url}) {
             
             if (response && response.data) {
               setData(response.data);
-              authService.setToken(`${process.env.REACT_APP_TOKEN}`)
 
             } else {
               console.error("Invalid response structure:", response);

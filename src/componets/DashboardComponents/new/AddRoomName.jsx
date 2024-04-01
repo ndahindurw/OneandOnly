@@ -3,6 +3,7 @@ import axiosInstance from '../../../Axios/axios';
 import { TbError404 } from 'react-icons/tb';
 import "./New.scss"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 function AddRoomName({ title }) {
   const [RoomNames, setRoomName] = useState([]);
@@ -11,7 +12,7 @@ function AddRoomName({ title }) {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    axiosInstance.get(process.env.REACT_APP_FETCH_ROOMS)
+    axios.get(process.env.REACT_APP_FETCH_ROOMS)
       .then((res) => {
         if (res && Array.isArray(res.data)) {
           setRoomName(res.data);
@@ -49,18 +50,18 @@ function AddRoomName({ title }) {
     axiosInstance
       .post(process.env.REACT_APP_ROOM_NAME, data)
       .then((res) => {
-        if (res && Array.isArray(res.data)) {
-          setRoomName(res.data);
+        if (res.data && res.data.msg) {
+          setSuccessMessage(res.data.msg); 
+          setRoomName([...RoomNames, res.data.roomName]); 
           console.log("res", res);
           
           setTimeout(() => {
-            setSuccessMessage("Submission successful!");
+            setSuccessMessage(""); 
           }, 3000);
         }
       })
       .catch((error) => {
         setError(error);
-        
       });
   };
 
@@ -76,8 +77,11 @@ function AddRoomName({ title }) {
         <select name="roomID" id="" className="form-select" aria-label="Default select example" onChange={handleChange}>
           <option value="">select a Room Location</option>
           {RoomNames.map((room) => (
-            <option key={room.roomID} value={room.roomID}>{room.roomID}</option>
-          ))}
+  <option key={room.roomID} value={room.roomID}>
+    {room.roomID} - {room.roomLocation}
+  </option>
+))}
+
         </select>
         <input type="text" placeholder='Enter the Room Name' onChange={handleChange} name="roomName" />
         {successMessage && <div className="success-message">{successMessage}</div>}

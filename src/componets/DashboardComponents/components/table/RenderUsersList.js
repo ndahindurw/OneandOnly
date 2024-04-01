@@ -39,10 +39,12 @@ const [nonPaginateUSer,setNonPaginateUSer]= useState([])
     }
     return list;
   };
-  
   const fetchData = useFetch({
     url: process.env.REACT_APP_FETCH_USER_DATA_URL,
   });
+  useEffect(()=>{
+    
+  },[])
   
   useEffect(() => {
     if (fetchData.data) {
@@ -134,7 +136,7 @@ const [nonPaginateUSer,setNonPaginateUSer]= useState([])
           method: 'delete',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
+            'Authorization': `Bearer ${authService.getToken()}`
           },
           
         }

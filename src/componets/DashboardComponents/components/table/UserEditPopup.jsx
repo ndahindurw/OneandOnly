@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useFetch from '../../../../hooks/useFetch';
 import axios from 'axios';
+import authService from '../../../Services/authService';
 
 const UserEditPopup = ({ title,clickedUser}) => {
   const [error, setError] = useState(null);
@@ -73,7 +74,7 @@ const UserEditPopup = ({ title,clickedUser}) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.REACT_APP_TOKEN}`,
+            Authorization: `Bearer ${authService.getToken()}`,
           },
         }
       );

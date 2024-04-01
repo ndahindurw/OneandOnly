@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Signup from '../../signupFiles/signup';
 import AddRoomName from './AddRoomName';
 import Widget from '../components/widget/WidgetApp';
+import authService from '../../Services/authService';
 
 function New({ title }) {
   
@@ -128,7 +129,7 @@ function New({ title }) {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
+            'Authorization': `Bearer ${authService.getToken()}`
           },
         }
       );

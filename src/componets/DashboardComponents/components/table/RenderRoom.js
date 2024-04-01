@@ -10,6 +10,7 @@ import authService from '../../../Services/authService';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import useFetch from '../../../../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 
@@ -39,7 +40,7 @@ const [roomToDelete, setRoomToDelete] = useState(null);
     useEffect(() => {
         const fetchRoomData = async () => {
             try {
-                const response = await axiosInstance.get(process.env.REACT_APP_FETCH_ROOMS);
+                const response = await axios.get(process.env.REACT_APP_FETCH_ROOMS);
                 setRoomData(response.data);
                 console.log("Rooms dataa",response.data)
             } catch (error) {
@@ -120,6 +121,7 @@ const [roomToDelete, setRoomToDelete] = useState(null);
         setClickedRoom(item)
         setRoomId(item.roomID);
         setEditPopupVisible(true);
+        
     };
 
     const handleDelete = async (clickedRoom) => {
@@ -133,7 +135,7 @@ const [roomToDelete, setRoomToDelete] = useState(null);
               method: 'delete',
               headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${process.env.REACT_APP_TOKEN}`
+                  'Authorization': `Bearer ${authService.getToken()}`
               },
           });
           
@@ -215,10 +217,9 @@ const [roomToDelete, setRoomToDelete] = useState(null);
                                   
                                     <form onSubmit={HandleSumitionForm} onLoad={(e)=>e.target}>
                                         <div title={title}>
-                                        
-                                                <RoomEditPopup title="Edit Room" roomId={roomId} onUpdate={handleEditPopupUpdate} clickedRoom={clickedRoom} />
-                                            
-                                         
+                                       
+                                                <RoomEditPopup title="Edit Room" roomId={roomId} onUpdate={handleEditPopupUpdate} clickedRoom={roomId} />
+                                                               
                                         </div>
                                     </form>
                                 </DialogContent>
