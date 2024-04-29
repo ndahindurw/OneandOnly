@@ -307,14 +307,13 @@ button:hover {
   margin-bottom: 30px;
   
 }
+
 .parag-intro{
   display: flex;
   flex-wrap: wrap;
-  width: 200px;
+
 }
-.cardContainersz{
-  width: 10px;
-}
+
 .cardContainersz{
   flex-direction: row;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -322,7 +321,7 @@ button:hover {
   transition: 3s;
   font-size: medium;
   flex-wrap: wrap;
-  width: 250px;
+  width: 350px;
   font-display: grid;
   margin: 1em;
   grid-template-rows: auto;
@@ -341,4 +340,13 @@ button:hover {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+.listInforoom{
+  line-height: 2em;
+}
+.SearchBooked{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 2em;
 }

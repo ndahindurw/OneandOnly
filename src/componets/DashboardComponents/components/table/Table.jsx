@@ -102,7 +102,7 @@ function Table({ title, data }) {
     setBookRoomPopup(true);
     setCredentials((prevState) => ({
       ...prevState,
-      bookingID: item.booking.bookingID, 
+      bookingID: item.booking.bookingID,
     }));
   };
 
