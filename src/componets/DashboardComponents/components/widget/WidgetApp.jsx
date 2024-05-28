@@ -1,14 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Widget.scss";
 import { IoIosArrowUp } from "react-icons/io";
 import { IoIosPerson } from "react-icons/io";
 import { MdRoomPreferences } from "react-icons/md";
 import { MdNoMeetingRoom } from "react-icons/md";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Widget({ type, dataLength }) {
   let data;
-  const diff = 50;
+
+  const [bookEvents, setBookEvents] = useState([]);
+  const [usernum, setusernum] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_FETCH_ROOMS, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => setBookEvents(response.data))
+      .catch((error) => setError(error.message));
+
+    axios
+      .get(process.env.REACT_APP_FETCH_USER_DATA_URL, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => setusernum(response.data))
+      .catch((error) => setError(error.message));
+  }, []);
+
+  console.log(usernum.length, "usernum");
+  console.log(bookEvents.length, "Booking Eve");
 
   switch (type) {
     case "User":
@@ -16,6 +43,7 @@ function Widget({ type, dataLength }) {
         title: "List-users",
         isMoney: false,
         link: "/users/ListAllusers",
+        Number: `${usernum.length}`,
         icon: (
           <IoIosPerson
             className="icon"
@@ -29,6 +57,7 @@ function Widget({ type, dataLength }) {
       data = {
         title: "Available Room",
         isMoney: false,
+        Number: `${bookEvents.length}`,
         link: "/Rooms/List-Availble-Rooms",
         icon: (
           <MdRoomPreferences
@@ -71,18 +100,15 @@ function Widget({ type, dataLength }) {
           {data.isMoney}
           {dataLength}
         </span>
-        <span className="link">
-          <Link to={data.link} className="link-title">
-            List All
-          </Link>
-        </span>
+        <div className=" widgetbut">
+          <span className="right">{data.icon}</span>
+          <span className="left">{data.Number}</span>
+        </div>
       </div>
-      <div className="right">
-        {/* <div className="percentage">
-          <IoIosArrowUp />
-          {diff}%
-        </div> */}
-        {data.icon}
+      <div className="link">
+        <Link to={data.link} className="link-title">
+          List All
+        </Link>
       </div>
     </div>
   );

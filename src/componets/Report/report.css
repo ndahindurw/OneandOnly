@@ -1,0 +1,36 @@
+.reportContainer{
+    display:  flex;
+    align-items: center;
+
+}
+.widgetReport{
+    display: flex;
+    padding: 10px;
+    gap: 70px;
+}
+.headerReport{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+.rreport{
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+}
+.containerLiner{
+    display: flex;
+    padding: 10px;
+    gap: 70px;
+}
+.linecard{
+    border: 1px solid #ddd;
+    width: 88%;
+    height: auto;
+    padding: 20px;
+    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: medium;
+}

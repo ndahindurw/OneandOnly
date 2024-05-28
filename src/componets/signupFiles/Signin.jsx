@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import authService from "../Services/authService";
@@ -9,6 +9,7 @@ import { Table } from "@mui/material";
 import axios from "axios";
 import { Dialog, DialogContent } from "@mui/material";
 import { EmailProvider } from "../Services/EmailProvider";
+import { showErrorToast, showSuccessToast } from "../../utils/ToastConfog";
 
 const AuthContext = createContext();
 
@@ -20,12 +21,13 @@ const Signin = () => {
   });
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [tokenPayLoad, setTokenPayLoad] = useState(null);
+  const [tokenPayLoad, setTokenPayLoad] = useState(authService.getToken());
   const [error, setError] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
+
   const clearMessages = () => {
     setError(null);
     setSuccessMessage(null);
@@ -39,14 +41,25 @@ const Signin = () => {
 
       if (response?.data.accessToken) {
         const accessToken = response?.data?.accessToken;
-        const setTokenResult = authService.setToken(accessToken);
 
         const payLoad = jwt_decode(accessToken);
         setTokenPayLoad(payLoad);
-        console.log("Decoded token:", payLoad);
-        payLoad?.authorities === "admin"
-          ? navigate("/Dashboard")
-          : navigate("/RequestRom");
+        const userRole = authService.getUserRole();
+
+        if (payLoad?.authorities === "admin") {
+          authService.setToken(accessToken);
+          navigate("/Dashboard");
+          showSuccessToast(`${userRole} Logged IN Successfully`);
+        } else {
+          authService.setToken(accessToken);
+          navigate("/RequestRom");
+          showSuccessToast(`${userRole} Logged IN Successfully`);
+        }
+
+        if (payLoad.exp * 1000 < Date.now()) {
+          authService.removeToken();
+          navigate("/login");
+        }
       }
 
       setError(null);
@@ -55,9 +68,36 @@ const Signin = () => {
       const errorMessage =
         err.response?.data?.message || "Invalid User Account";
       setError(errorMessage);
+      showErrorToast("Verify your Credentials");
       console.log(err);
     }
   };
+
+  const LoginFun = useEffect(() => {
+    const token = authService.getToken();
+    if (token) {
+      try {
+        const decodedToken = jwt_decode(token);
+        setTokenPayLoad(decodedToken);
+        console.log("Decoded token on app init:", decodedToken);
+
+        if (decodedToken.exp * 1000 < Date.now()) {
+          authService.removeToken();
+          navigate("/login");
+        } else {
+          if (decodedToken.authorities === "admin") {
+            navigate("/Dashboard");
+          } else if (decodedToken.authorities === "user") {
+            navigate("/RequestRoom");
+          }
+        }
+      } catch (error) {
+        console.error("Error decoding token on app init:", error);
+        authService.removeToken();
+        navigate("/login");
+      }
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -115,8 +155,8 @@ const Signin = () => {
 
   return (
     <EmailProvider email={email}>
+      <Navbar />
       <div className="login-container">
-        <Navbar />
         <div className="login-form-container">
           <form className="form-container" onSubmit={handleLogin}>
             <h2>Login</h2>

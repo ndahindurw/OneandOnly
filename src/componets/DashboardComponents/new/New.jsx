@@ -13,6 +13,8 @@ import Signup from "../../signupFiles/signup";
 import AddRoomName from "./AddRoomName";
 import Widget from "../components/widget/WidgetApp";
 import authService from "../../Services/authService";
+import { Dialog, DialogContent } from "@mui/material";
+import { showErrorToast } from "../../../utils/ToastConfog";
 
 function New({ title }) {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -22,6 +24,7 @@ function New({ title }) {
   const [showSignup, setShowSignup] = useState(false);
   const [showRoom, setShowRoom] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+  const [showRoomName, setShowRoomName] = useState(false);
 
   const handleSignupClick = () => {
     setShowSignup(true);
@@ -106,11 +109,6 @@ function New({ title }) {
     }
   };
 
-  const notify = () => {
-    toast.success("Success", { position: toast.POSITION.TOP_CENTER });
-    setDisableButton(!disableButton);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -125,6 +123,13 @@ function New({ title }) {
       return;
     }
 
+    if (formInputs.capacity > 40) {
+      setError("Capacity cannot exceed 40.");
+      setMessageTimeout(setTimeout(clearMessages, 5000));
+      showErrorToast("Room capacity should not Exceed 50");
+      return;
+    }
+
     try {
       const formData = new FormData();
 
@@ -132,8 +137,6 @@ function New({ title }) {
       formData.append("roomLocation", formInputs.roomLocation);
       formData.append("capacity", formInputs.capacity);
       formData.append("roomDescription", formInputs.roomDescription);
-
-      console.log("Form Data:", formData);
 
       const responseData = await axios.post(
         process.env.REACT_APP_API_ENDPOINT_ADDROOMS,
@@ -154,7 +157,15 @@ function New({ title }) {
     } catch (error) {
       setError("Failed to add rooms. Bad Credentials.");
       setMessageTimeout(setTimeout(clearMessages, 5000));
+      showErrorToast("Failed to add rooms. Bad Credentials.");
     }
+  };
+
+  const HandleClickedName = () => {
+    setShowRoomName(true);
+  };
+  const HandleCloseName = () => {
+    setShowRoomName(false);
   };
 
   return (
@@ -243,6 +254,9 @@ function New({ title }) {
                 {error && <div className="error-message">{error}</div>}
                 <button type="submit">Send</button>
               </form>
+              <button className="addRoomName" onClick={HandleClickedName}>
+                + Give Name
+              </button>
             </div>
           </div>
         )}
@@ -254,6 +268,12 @@ function New({ title }) {
               {showRoom && <AddRoomName onClose={handleRoomFormClose} />}
             </div>
           </div>
+        )}
+
+        {showRoomName && (
+          <Dialog open={showRoomName} onClose={HandleCloseName}>
+            <DialogContent>{showRoomName && <AddRoomName />}</DialogContent>
+          </Dialog>
         )}
       </div>
     </div>

@@ -3,17 +3,18 @@ $accent-color: #e84118;
 $border-color: rgb(229, 229, 229);
 $hover-bg-color: #686de0;
 $gradient-start: #002E33;
-$gradient-end: #1B484B;
+$gradient-end: #002E33;
 $box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 $border-radius: 10px;
 
 .sidebar {
   flex: 1;
-  
   border: 0.5px solid $border-color;
   min-height: 100vh;
   background: linear-gradient(to bottom, $gradient-start, $gradient-end);
   box-shadow: $box-shadow;
+  font-size: larger;
+
 
   .top {
     height: 50px;
@@ -25,14 +26,18 @@ $border-radius: 10px;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
 
+    
+
     .logos {
       
       font-weight: bold;
-      color: whitesmoke;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 70px; 
+      font-size: larger;
+      font-weight: 800;
+      padding-left: 5px;
+
       
     }
   

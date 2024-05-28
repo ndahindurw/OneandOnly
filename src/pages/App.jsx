@@ -16,6 +16,7 @@ import Signin from "../componets/signupFiles/Signin";
 import Signup from "../componets/signupFiles/signup";
 import AdminRoute from "./AdminRoute";
 import "./App.css";
+import { ToastContainer } from "react-toastify";
 import { Routes, Route } from "react-router-dom";
 import UserRoutes from "./UserRoutes";
 import Setting from "../componets/DashboardComponents/single/settings";
@@ -27,10 +28,12 @@ import AddRoomName from "../componets/DashboardComponents/new/AddRoomName";
 import RenderRoom from "../componets/DashboardComponents/components/table/RenderRoom";
 import ChangePAssword from "../componets/signupFiles/ChangePAssword";
 import { EmailProvider } from "../componets/Services/EmailProvider";
+import Report from "../componets/Report/Report";
 
 function App() {
   return (
     <div className="App">
+      <ToastContainer />
       <Routes>
         <Route path="/">
           <Route index element={<Home />} />
@@ -41,6 +44,14 @@ function App() {
               <EmailProvider>
                 <ChangePAssword />
               </EmailProvider>
+            }
+          />
+          <Route
+            path="Report"
+            element={
+              <AdminRoute>
+                <Report title="Report" />
+              </AdminRoute>
             }
           />
           <Route

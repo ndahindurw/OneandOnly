@@ -2,10 +2,12 @@
     display: flex;
     justify-content: space-between;
     flex: 1;
-    padding: 10px;
+    padding: 20px;
     -webkit-box-shadow: 2px 2px 10px 1px rgb(0, 0, 0,0.47) ;
     box-shadow: 2px 2px 10px 1px rgb(201, 201, 201,0.47);
-    height: 120px;
+    height: 160px;
+
+   
     .left,.right{
         display: flex;
        flex-direction: column;
@@ -24,6 +26,7 @@
         font-size: 12px;
         font-size:12px;
         border-bottom: 1px solid gray;
+        font-size: xx-large;
         cursor: pointer;
         .link-title{
             text-decoration: none;
@@ -48,8 +51,14 @@
         border-radius: 5px;
         background-color: rgba(12,0,128,0.541);
         align-self: flex-end;
-        width: 30px;
-        height:30px;
+        width: 50px;
+        height:50px;
        }
+        .widgetbut{
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        font-size: xx-large;
+    }
     }
 } 

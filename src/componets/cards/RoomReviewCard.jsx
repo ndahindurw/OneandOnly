@@ -44,10 +44,11 @@ export default function RoomReviewCard({ roomData }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get(
-          process.env.REACT_APP_GET_ROOMNAMES
-        );
-        setRoomNames(response.data);
+        const response = await axiosInstance
+          .get(process.env.REACT_APP_GET_ROOMNAMES)
+          .then((response) => {
+            setRoomNames(response.data);
+          });
       } catch (error) {
         setError(error);
       }
@@ -58,10 +59,10 @@ export default function RoomReviewCard({ roomData }) {
 
   useEffect(() => {
     if (hasReloaded) {
-      window.location.reload();
       setHasReloaded(false);
     }
   }, [hasReloaded]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (cardRef.current && !cardRef.current.contains(event.target)) {
@@ -186,6 +187,8 @@ export default function RoomReviewCard({ roomData }) {
     console.log("Room Names:", roomNames);
     setFilteredRooms(filterRooms());
   }, [roomNames, selectedFloor]);
+
+  console.log("Filtered Rooms for rendering:", filteredRooms);
 
   return (
     <>

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { useEmail } from "../Services/EmailProvider";
 
 function ChangePassword(props) {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     password: "",
     confirmPassw: "",

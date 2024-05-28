@@ -26,12 +26,18 @@ function Landing() {
     setShowRoom(false);
   };
 
+  const handleReport = () => {
+    setShowSignup(false);
+    setShowRoom(false);
+  };
   return (
     <div className="Landing">
       <SideBar
+        handleReport={handleReport}
         onSignupClick={handleSignupClick}
         onRoomClick={handleRoomClick}
       />
+
       <div className="homeContent">
         <div className="widgets">
           <Widget type="User" />

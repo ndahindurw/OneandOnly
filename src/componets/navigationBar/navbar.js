@@ -15,11 +15,13 @@ function Navbar() {
 
   return (
     <div className="header">
-      <img className="logo1" src={image0} alt="Logo" />
-      <h1 className="logo">
-        <span className="first">Rwanda</span>
-        <span className="second"> Revenue</span> <span className="tertiary">Authority</span>
-      </h1>
+      <div className='logoBg'>
+        <img className="logo1" src={image0} alt="Logo" />
+        <h1 className="logo">
+          <span className="first">Rwanda</span>
+          <span className="second"> Revenue</span> <span className="tertiary">Authority</span>
+        </h1>
+      </div>
       <nav>
         <ul>
           <li>

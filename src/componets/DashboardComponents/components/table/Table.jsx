@@ -196,9 +196,6 @@ function Table({ title, data }) {
 
   const HandleSumitionForm = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
-    console.log("Credentials:", credentials);
-    console.log("Request config:", { data: credentials });
 
     try {
       const response = await axiosInstance.delete(
@@ -443,7 +440,13 @@ function Table({ title, data }) {
           <FontAwesomeIcon icon={faPrint} className="s-icons" /> Print
         </button>
         <button>
-          <CSVLink data={allusers} filename={"users.csv"} className="sort-btn">
+          <CSVLink
+            id="test-table-xls-button"
+            table="excelTable"
+            data={allusers}
+            filename={"users.csv"}
+            className="sort-btn"
+          >
             Export to CSV
           </CSVLink>
         </button>
@@ -451,7 +454,7 @@ function Table({ title, data }) {
           id="test-table-xls-button"
           className="download-table-xls-button sort-btn"
           table="excelTable"
-          filename="excelFile"
+          filename="excelData.xlsx"
           sheet="tablexls"
           buttonText="Export to Excel"
         />

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import authService from "../Services/authService";
-import axiosInstance from "../../Axios/axios";
 import "./Card.css";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import RoomReviewCard from "./RoomReviewCard";
@@ -28,7 +27,6 @@ const Card = ({ filteredRooms }) => {
     purpose: ""
   })
   const [isExpanded, setIsExpanded] = useState(false);
-  const [lastAddedRoom, setLastAddedRoom] = useState([]);
   const [messageTimeout, setMessageTimeout] = useState(null);
   const clearMessages = () => {
     setError(null);
@@ -38,21 +36,9 @@ const Card = ({ filteredRooms }) => {
 
   const cardContainerRef = useRef(null);
 
-  const addRoom = (newRoom) => {
-    setLastAddedRoom(newRoom);
-  };
 
 
 
-  useEffect(() => {
-    if (roomNames.length > 0) {
-      const lastRoom = roomNames[roomNames.length - 1];
-      const bookingsForLastRoom = bookingsData.filter(booking => booking.roomId === lastRoom.roomID.roomID);
-      if (bookingsForLastRoom.length > 0) {
-        setLastAddedRoom(lastRoom);
-      }
-    }
-  }, [roomNames, bookingsData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -162,22 +148,29 @@ const Card = ({ filteredRooms }) => {
           return;
         }
 
-        const roomResponse = await axiosInstance.get(
-          process.env.REACT_APP_FETCH_EVENTS
+        const roomResponse = await axios.get(
+          process.env.REACT_APP_FETCH_EVENTS,
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
         const roomData = roomResponse.data;
 
         setRoomData(roomData);
+
+
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Error fetching data bgfghgf.");
       }
-    };
+    }
 
-    fetchData();
+
+    fetchData()
   }, []);
 
-  console.log("Room Booking Information", roomData);
   console.log("localstorage", localStorage.getItem("token"))
   const openDeleteDialog = (room) => {
     if (room && room.booking && room.booking.bookingID) {
@@ -249,7 +242,6 @@ const Card = ({ filteredRooms }) => {
 
 
   const foundRoom = roomNames.find(room => room.roomNameID);
-  const roomName = foundRoom ? foundRoom.roomName : "Not Found";
 
 
   return (

@@ -10,9 +10,11 @@ import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import UserEditPopup from './UserEditPopup';
-import EditRoom from '../../../cards/Editroom';
 import './Table.scss'
 import { jwtDecode as jwt_decode } from 'jwt-decode';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 function RenderUsers({ title }) {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -28,7 +30,6 @@ function RenderUsers({ title }) {
   const [userToDelete, setUserToDelete] = useState([]);
   const [nonPaginateUSer, setNonPaginateUSer] = useState([])
 
-
   const navigate = useNavigate();
 
   const HandleList = (array) => {
@@ -43,32 +44,23 @@ function RenderUsers({ title }) {
   const fetchData = useFetch({
     url: process.env.REACT_APP_FETCH_USER_DATA_URL,
   });
-  useEffect(() => {
-
-  }, [])
 
   useEffect(() => {
     if (fetchData.data) {
       setNonPaginateUSer(fetchData.data);
       const chunks = HandleList(fetchData.data);
       setAllusers(chunks);
-
     }
   }, [fetchData.data]);
-
-
 
   const HandleReturn = () => {
     try {
       const storedToken = authService.getToken();
-
       if (!storedToken) {
         console.error('Token is null or undefined');
         return;
       }
-
       const payLoad = jwt_decode(storedToken);
-
       if (payLoad) {
         payLoad?.authorities === 'admin' ? navigate('/Dashboard') : navigate('/RequestRom');
       } else {
@@ -107,7 +99,6 @@ function RenderUsers({ title }) {
 
   const handleFormLoad = () => {
     setEditPopupVisible(!editPopupVisible);
-
   };
 
   const handleEdit = (item) => {
@@ -127,33 +118,16 @@ function RenderUsers({ title }) {
     setUserToDelete(null);
   };
 
-
   const handleDelete = async (userToDelete) => {
     try {
       const deleteUrl = `${process.env.REACT_APP_DELETE_USER}/?staffID=${userToDelete.staffID}`;
-
-      const response = await fetch(deleteUrl,
-        {
-          method: 'delete',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authService.getToken()}`
-          },
-
-        }
-
-      );
-
+      const response = await axiosInstance.delete(deleteUrl);
       if (response.status === 200) {
         setSuccessMessage('User deleted successfully.');
-
         const updatedUsers = nonPaginateUSer.filter((u) => u.staffID !== userToDelete.staffID);
         console.log(updatedUsers, "sdfas", userToDelete)
         setAllusers(HandleList(updatedUsers));
         setNonPaginateUSer(updatedUsers)
-
-
-
       } else {
         setError('An error occurred while trying to delete the user.');
       }
@@ -163,17 +137,46 @@ function RenderUsers({ title }) {
     }
   };
 
+  const exportPDF = () => {
+    const input = document.getElementById('excelTable');
+    if (input) {
+      html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let heightLeft = imgHeight;
 
+        pdf.setFontSize(12);
+        pdf.text("RWANDA REVENUE AUTHORITY", 10, 10);
+        pdf.text("Address: KG 1 Roundabout,SONATUBE Kigali", 10, 20);
+
+        pdf.addImage(imgData, 'PNG', 0, 30, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, -heightLeft, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save('users.pdf');
+      }).catch(error => {
+        console.error('Error generating PDF:', error);
+      });
+    } else {
+      console.error('Element with id "excelTable" not found');
+    }
+  };
 
 
   console.log("all user", allusers)
 
   return (
-
     <div>
       <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '5px' }}>{title}</h1>
       <div className='headingTable'>
-
         <div style={{ display: 'flex', alignItems: 'center', }}>
           <button type="button" className="sort-btn" onClick={handleSort}>
             Sort by Date
@@ -184,11 +187,14 @@ function RenderUsers({ title }) {
           <button type="button" className="sort-btn" onClick={printList}>
             <FontAwesomeIcon icon={faPrint} className="s-icons" /> Print
           </button>
-          <button>
-            <CSVLink data={allusers} filename={'users.csv'} className="sort-btn">
+          <button type="button" className="sort-btn" onClick={exportPDF}>
+            Export to PDF
+          </button>
+          {/* <button>
+            <CSVLink data={allusers} filename={'users.csv'} id="test-table-xls-button" table="excelTable" className="sort-btn">
               Export to CSV
             </CSVLink>
-          </button>
+          </button> */}
           <ReactHTMLTableToExcel
             id="test-table-xls-button"
             className="download-table-xls-button sort-btn"
@@ -209,23 +215,19 @@ function RenderUsers({ title }) {
         />
       </div>
       <div className="card">
-
-
         <div className="table-responsive">
-
-          <table id="excelTable" className="table table-striped table-bordered">
+          <table id="excelTable" className="table table-striped table-bordered custom-table">
             <thead className="thead-dark">
               <tr>
-                <th>Staff ID</th>
+                <th>StaffID</th>
                 <th>Full Name</th>
-                <th>Employee Number</th>
-                <th>User Number</th>
-                <th>Mobile Number</th>
+                <th>EmpNo</th>
+                <th>Tel</th>
                 <th>Email</th>
-                <th>User Status</th>
+                <th>Status</th>
                 <th>Unit</th>
                 <th>Department</th>
-                <th>Login Fail Count</th>
+                <th>FailCount</th>
                 <th>Position</th>
                 <th>Created At</th>
                 <th>Updated At</th>
@@ -234,89 +236,116 @@ function RenderUsers({ title }) {
               </tr>
             </thead>
             <tbody>
-              {allusers[page - 1] && allusers[page - 1]
-                .filter((item) => !item.isDeleted)
-                .filter((item) =>
-                  userData.trim() === ''
-                    ? true
-                    : Object.values(item).some(
-                      (value) =>
-                        typeof value === 'string' && value.toLowerCase().includes(userData.toLowerCase())
-                    )
-                )
-                .map((item) => (
-
-
-                  <tr key={item.staffID}>
-                    <td>{item.staffID}</td>
-                    <td>{item.fullnames}</td>
-                    <td>{item.empNo}</td>
-                    <td>{item.userNo}</td>
-                    <td>{item.mobileNo}</td>
-                    <td>{item.email}</td>
-                    <td>{item.userStatus}</td>
-                    <td>{item.units && item.units.unitName}</td>
-                    <td>{item.position}</td>
-                    <td>{item.loginFailCount}</td>
-                    <td>{item.position}</td>
-                    <td>{item.createdAt}</td>
-                    <td>{item.updatedAt}</td>
-                    <td>{item.username}</td>
-                    <td className="button-cell">
-                      <button type="button" className="btn btn-success" onClick={() => handleEdit(item)}>
-                        <FontAwesomeIcon icon={faEdit} className="s-icons" />
-                      </button>
-                      <button type="button" className="btn btn-danger" onClick={() => openDeleteDialog(item)}>
-                        <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
-                      </button>
-
-                    </td>
-                  </tr>
-                ))}
+              {allusers[page - 1] &&
+                allusers[page - 1]
+                  .filter((item) => !item.isDeleted)
+                  .filter((item) =>
+                    userData.trim() === ''
+                      ? true
+                      : Object.values(item).some(
+                        (value) =>
+                          typeof value === 'string' &&
+                          value.toLowerCase().includes(userData.toLowerCase())
+                      )
+                  )
+                  .map((item) => (
+                    <tr key={item.staffID}>
+                      <td>{item.staffID}</td>
+                      <td>{item.fullnames}</td>
+                      <td>{item.empNo}</td>
+                      <td>{item.mobileNo}</td>
+                      <td>{item.email}</td>
+                      <td>{item.userStatus}</td>
+                      <td>{item.units && item.units.unitName}</td>
+                      <td>{item.position}</td>
+                      <td>{item.loginFailCount}</td>
+                      <td>{item.position}</td>
+                      <td>{item.createdAt}</td>
+                      <td>{item.updatedAt}</td>
+                      <td>{item.username}</td>
+                      <td className="button-cell">
+                        <button
+                          type="button"
+                          className="btn btn-success"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <FontAwesomeIcon icon={faEdit} className="s-icons" />
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => openDeleteDialog(item)}
+                        >
+                          <FontAwesomeIcon icon={faTrashAlt} className="s-icons" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <button onClick={handlePreviousPage} disabled={page === 1}>
+        <div className="pagination-controls">
+          <button
+            className="pagination-button"
+            onClick={handlePreviousPage}
+            disabled={page === 1}
+          >
             Previous
           </button>
-          <span style={{ marginTop: "20px" }}>Page {page} of {allusers.length}</span>
-          <button onClick={handleNextPage} disabled={page === allusers.length}>
+          <span className="pagination-info">
+            Page {page} of {allusers.length}
+          </span>
+          <button
+            className="pagination-button"
+            onClick={handleNextPage}
+            disabled={page === allusers.length}
+          >
             Next
           </button>
+        </div>
 
-          {editPopupVisible && (
-            <Dialog open={editPopupVisible} onClose={handleFormLoad} maxWidth="80%" >
-              <DialogContent>
-
-
-                <div title={title}>
-
-                  <UserEditPopup title="Edit Room" clickedUser={clickedUser} />
-
-
-                </div>
-
-              </DialogContent>
-            </Dialog>
-          )}
-
-          <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+        {editPopupVisible && (
+          <Dialog open={editPopupVisible} onClose={handleFormLoad} maxWidth="80%">
             <DialogContent>
-              <div>Are you sure you want to delete this user?</div>
-              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-                <button onClick={() => {
-                  handleDelete(userToDelete);
-                  closeDeleteDialog();
-                }}>Delete</button>
-                <button onClick={closeDeleteDialog} style={{ marginLeft: '10px' }}>Cancel</button>
+              <div title={title}>
+                <UserEditPopup title="Edit Room" clickedUser={clickedUser} />
               </div>
             </DialogContent>
           </Dialog>
+        )}
 
-        </div>
+        <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+          <DialogContent>
+            <div>Are you sure you want to delete this user?</div>
+            <div
+              style={{
+                marginTop: '20px',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  handleDelete(userToDelete);
+                  closeDeleteDialog();
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={closeDeleteDialog}
+                style={{ marginLeft: '10px' }}
+              >
+                Cancel
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
+
     </div>
 
 
