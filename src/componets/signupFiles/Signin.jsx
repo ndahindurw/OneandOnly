@@ -146,6 +146,8 @@ const Signin = () => {
           setSuccessMessage("OTP verified successfully");
           setMessageTimeout(setTimeout(() => setSuccessMessage(""), 3000));
           navigate("/ChangePassword");
+        } else {
+          showErrorToast("Invalid OTP");
         }
       })
       .catch((error) => {

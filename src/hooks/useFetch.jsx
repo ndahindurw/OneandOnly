@@ -29,7 +29,7 @@ function useFetch({ url }) {
     };
 
     fetchData();
-  }, [url]);
+  }, []);
   return { error, data, loading };
 }
 

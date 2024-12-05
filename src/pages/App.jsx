@@ -68,35 +68,35 @@ function App() {
             index
             path="Dashboard"
             element={
-              <AdminRoute>
-                <Landing />
-              </AdminRoute>
+              // <AdminRoute>
+              <Landing />
+              // </AdminRoute>
             }
           />
 
           <Route path="Users/*">
             <Route
               element={
-                <AdminRoute>
-                  <Landing />
-                </AdminRoute>
+                // <AdminRoute>
+                <Landing />
+                // </AdminRoute>
               }
             />
             <Route
               path="ListAllusers"
               element={
-                <AdminRoute>
-                  <RenderUsers title="ListAllusers" />
-                </AdminRoute>
+                // <AdminRoute>
+                <RenderUsers title="ListAllusers" />
+                // </AdminRoute>
               }
             />
             <Route path=":userId" element={<Setting />} />
             <Route
               path="new-user"
               element={
-                <AdminRoute>
-                  <Signup inputs={UserInputs} title="Add New user" />
-                </AdminRoute>
+                // <AdminRoute>
+                <Signup inputs={UserInputs} title="Add New user" />
+                // </AdminRoute>
               }
             />
           </Route>
@@ -104,9 +104,9 @@ function App() {
           <Route path="Bookings/*">
             <Route
               element={
-                <AdminRoute>
-                  <Table title="Bookings Rooms" />
-                </AdminRoute>
+                // <AdminRoute>
+                <Table title="Bookings Rooms" />
+                // </AdminRoute>
               }
             />
             <Route
@@ -119,17 +119,17 @@ function App() {
             <Route
               path="List-Availble-Rooms"
               element={
-                <AdminRoute>
-                  <RenderRoom title="Available Some Rooms" />
-                </AdminRoute>
+                // <AdminRoute>
+                <RenderRoom title="Available Some Rooms" />
+                // </AdminRoute>
               }
             />
             <Route
               path="List-Booked-Rooms"
               element={
-                <AdminRoute>
-                  <RenderRoom title="Booked  Rooms" />
-                </AdminRoute>
+                // <AdminRoute>
+                <RenderRoom title="Booked  Rooms" />
+                // </AdminRoute>
               }
             />
 

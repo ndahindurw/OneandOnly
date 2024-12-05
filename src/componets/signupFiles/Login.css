@@ -1,19 +1,17 @@
-
 .login-container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #002E33;
+  background-color: #333333;
   padding: 20px;
   max-height: 40vh;
 }
 
-.signup-link{
+.signup-link {
   text-decoration: underline;
-  
 }
-.signup-link:hover{
+.signup-link:hover {
   cursor: pointer;
 }
 
@@ -36,7 +34,7 @@
 
 .form-container h2 {
   font-size: 24px;
-  color: #9DCF33;
+  color: #9dcf33;
   margin-bottom: 20px;
 }
 
@@ -49,15 +47,15 @@
 }
 
 .error-message {
-  color: #FF0000;
+  color: #ff0000;
   margin: 10px 0;
 }
 
 .green-btn {
   width: 50%;
   padding: 12px;
-  background: #9DCF33;
-  color: #F5F5F5;
+  background: #9dcf33;
+  color: #f5f5f5;
   font-size: 16px;
   border: none;
   border-radius: 5px;
@@ -66,13 +64,12 @@
 }
 
 .account-link {
-  color: #4AB0DD;
+  color: #4ab0dd;
 }
 
 .green-btn:hover {
   background-color: #76b545;
 }
-
 
 @media screen and (max-width: 768px) {
   .login-form-container {

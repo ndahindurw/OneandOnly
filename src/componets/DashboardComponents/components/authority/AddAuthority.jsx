@@ -18,7 +18,7 @@ const AddAuthority = ({ data, url }) => {
   const [hideMessageTimeout, setHideMessageTimeout] = useState(null);
   const navigate = useNavigate();
 
-  const { data: userAuthority } = useFetch({
+  const { data: userAuthority, loading: loadingAuthority } = useFetch({
     url: process.env.REACT_APP_AUTHORITY_LIST,
   });
   const { data: UserList } = useFetch({
@@ -110,20 +110,24 @@ const AddAuthority = ({ data, url }) => {
       <div className="Auth-form-container">
         <form className="form-container" onSubmit={handleAuthority}>
           <h2>Map Auth to users</h2>
-          <select
-            name="authority"
-            onChange={(e) =>
-              setCredentials({ ...credentials, authority: e.target.value })
-            }
-          >
-            <option>Select Authority</option>
-            {userAuthority &&
-              userAuthority.map((item) => (
-                <option key={item.authorityNo} value={item.authorityNo}>
-                  {item.authorityName}
-                </option>
-              ))}
-          </select>
+          {loadingAuthority ? (
+            <p>Loading authorities...</p>
+          ) : (
+            <select
+              name="authority"
+              onChange={(e) =>
+                setCredentials({ ...credentials, authority: e.target.value })
+              }
+            >
+              <option>Select Authority</option>
+              {userAuthority &&
+                userAuthority.map((item) => (
+                  <option key={item.authorityNo} value={item.authorityNo}>
+                    {item.authorityName}
+                  </option>
+                ))}
+            </select>
+          )}
 
           <input
             name="user"

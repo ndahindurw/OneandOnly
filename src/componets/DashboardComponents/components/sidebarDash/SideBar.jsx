@@ -24,10 +24,12 @@ function SideBar({ onSignupClick, onRoomClick, onAddRoomClick, handleReport }) {
   return (
     <div className="sidebar">
       <div className="headerSide">
-        <strong className="logos">
-          <span className="first">ROOM</span>
-          <span className="second"> BOOKING</span>
-          <span className="second"> SYSTEM</span>
+        <strong className=" flex   ">
+          <div>
+            <span className="first text-white ">One&Only </span>
+            <span className="second text-white ">  </span>
+          </div>
+          <span className="second text-white "> Hotel Room-booking</span>
         </strong>
       </div>
 
@@ -37,7 +39,7 @@ function SideBar({ onSignupClick, onRoomClick, onAddRoomClick, handleReport }) {
           <li>
             <Link to="/Dashboard">
               <Dashboard className="icon" />
-              <span className="Dashbord">Home</span>
+              <span className="Dashbord bg-[#000]">Home</span>
             </Link>
           </li>
         </ul>

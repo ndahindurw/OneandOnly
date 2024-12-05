@@ -209,6 +209,7 @@ const UserEditPopup = ({ title, clickedUser }) => {
                 required
                 className="form-control"
                 onChange={handleChange}
+                disabled
               />
             </div>
             {successMessage && (
